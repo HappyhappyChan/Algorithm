@@ -546,3 +546,342 @@ s.toCharArray();
 t.indexOf(c, index+1);
 ```
 
+## 665  修改一个数成为非递减数组
+
+665. Non-decreasing Array (Easy)
+
+[Leetcode](https://leetcode.com/problems/non-decreasing-array/description/) / [力扣](https://leetcode-cn.com/problems/non-decreasing-array/description/)
+
+### Solution 1：我自己想的
+
+遇到num[i] > num[i+1]，有2种删除情况
+
+1 删除num[i] 判断删除后的num是否符合f1
+
+2 删除num[i+1] 判断删除后是否符合f2
+
+还要用一个del数组判断哪个数被删除，如果f1是true，则在del中标记i，如果f2是true，在del中标记i+1。
+
+用cnt标记删除的次数，因为最多删除一次，如果cnt已经为0，但是又遇到num[i] > num[i+1]，直接返回false。
+
+### Solution 2：github
+
+在出现 nums[i] < nums[i - 1] 时，需要考虑的是应该修改数组的哪个数，使得本次修改能使 i 之前的数组成为非递减数组，并且 **不影响后续的操作** 。优先考虑令 nums[i - 1] = nums[i]，因为如果修改 nums[i] = nums[i - 1] 的话，那么 nums[i] 这个数会变大，就有可能比 nums[i + 1] 大，从而影响了后续操作。还有一个比较特别的情况就是 nums[i] < nums[i - 2]，修改 nums[i - 1] = nums[i] 不能使数组成为非递减数组，只能修改 nums[i] = nums[i - 1]。
+
+### Solution 3：贪心算法
+
+本题是要维持一个非递减的数列，所以遇到递减的情况时(nums[i] > nums[i + 1])，要么将前面的元素缩小，要么将后面的元素放大。
+但是本题唯一的易错点就在这，
+如果将nums[i]缩小，可能会导致其无法融入前面已经遍历过的非递减子数列;
+·如果将nums[i +1]放大，可能会导致其后续的继续出现递减;
+所以要采取贪心的策略，在遍历时，每次需要看连续的三个元素，也就是瞻前顾后，遵循以下两个原则:
+
+- 需要尽可能不放大nums[i +1]，这样会让后续非递减更困难;
+- 如果缩小nums[i]，但不破坏前面的子序列的非递减性;
+
+算法步骤:
+
+- 遍历数组，如果遇到递减:
+- 还能修改:
+  - 修改方案1:将nums[i]缩小至nums[i + 1];
+  - 修改方案2:将nums[i + 1]放大至nums[i];。
+- 不能修改了:直接返回false;
+
+复杂度分析
+时间复杂度:O(n)
+
+空间复杂度:O (1)
+
+## 53. 子数组最大的和
+
+53. Maximum Subarray (Easy)
+
+[Leetcode](https://leetcode.com/problems/maximum-subarray/description/) / [力扣](https://leetcode-cn.com/problems/maximum-subarray/description/)
+
+### Solution 1：动态规划
+
+我想到的跟前面一题类似，都是
+
+f(n - 1) > 0, 则f(n) = array[n] + f[n-1];
+
+f(n - 1) <= 0, 则f(n) = array[n];
+
+### Solution 2：暴力法
+
+看我的代码
+
+## 763  分隔字符串使同种字符出现在一起
+
+763. Partition Labels (Medium)
+
+[Leetcode](https://leetcode.com/problems/partition-labels/description/) / [力扣](https://leetcode-cn.com/problems/partition-labels/description/)
+
+```java
+//相当于变成[s.length()];
+return new ArrayList(Arrays.asList(s.length()))
+```
+
+### Solution 1：双指针
+
+看我的代码&ipad上草稿。
+
+1 如果字母在0和len-1位，直接return len
+
+2 开始遍历字符串，字母第一次出现的位置为k，最后出现的位置为j,在[k, j]之间遍历字母c，如果发现c最后出现的位置t>j， 则扩展到在[k, t]查找，如果遍历完，则进入t+1继续遍历。
+
+LeetCode上面给的solution叫做greedy，其实就是我的算法。不过代码有优化。
+
+Complexity Analysis
+. Time Complexity: O(N ), where N is the length of S.
+. Space Complexity: O(1) to keep data structure last of not more than 26 characters.
+
+# 二分查找
+
+代码
+
+```java
+public int binarySearch(int[] nums, int key) {
+    int l = 0, h = nums.length - 1;
+    while (l <= h) {
+        int m = l + (h - l) / 2;
+        if (nums[m] == key) {
+            return m;
+        } else if (nums[m] > key) {
+            h = m - 1;
+        } else {
+            l = m + 1;
+        }
+    }
+    return -1;
+}
+```
+
+**时间复杂度**
+
+二分查找也称为折半查找，每次都能将查找区间减半，这种折半特性的算法时间复杂度为 O(logN)。
+
+**m 计算**
+
+有两种计算中值 m 的方式：
+
+- m = (l + h) / 2
+- m = l + (h - l) / 2
+
+l + h 可能出现加法溢出，也就是说加法的结果大于整型能够表示的范围。但是 l 和 h 都为正数，因此 h - l 不会出现加法溢出问题。所以，最好使用第二种计算法方法。
+
+**未成功查找的返回值**
+
+循环退出时如果仍然没有查找到 key，那么表示查找失败。可以有两种返回值：
+
+- -1：以一个错误码表示没有查找到 key
+- l：将 key 插入到 nums 中的正确位置
+
+**变种**
+
+二分查找可以有很多变种，实现变种要注意边界值的判断。例如在一个有重复元素的数组中查找 key 的最左位置的实现如下：
+
+```java
+public int binarySearch(int[] nums, int key) {
+    //从nums.length-1变成nums.length
+    int l = 0, h = nums.length;
+    while (l < h) {
+        int m = l + (h - l) / 2;
+        if (nums[m] >= key) {
+            h = m;
+        } else {
+            l = m + 1;
+        }
+    }
+    return l;
+}
+```
+
+该实现和正常实现有以下不同：
+
+- h 的赋值表达式为 h = m
+- 循环条件为 l < h
+- 最后返回 l 而不是 -1
+
+在 nums[m] >= key 的情况下，可以推导出最左 key 位于 [l, m] 区间中，这是一个闭区间。h 的赋值表达式为 h = m，因为 m 位置也可能是解。
+
+在 h 的赋值表达式为 h = m 的情况下，如果循环条件为 l <= h，那么会出现循环无法退出的情况，因此循环条件只能是 l < h。以下演示了循环条件为 l <= h 时循环无法退出的情况：
+
+```
+nums = {0, 1, 2}, key = 1
+l   m   h
+0   1   2  nums[m] >= key
+0   0   1  nums[m] < key
+1   1   1  nums[m] >= key
+1   1   1  nums[m] >= key
+...
+```
+
+当循环体退出时，不表示没有查找到 key，因此最后返回的结果不应该为 -1。为了验证有没有查找到，需要在调用端判断一下返回位置上的值和 key 是否相等。
+
+## 69  求开方
+
+69 Sqrt(x) (Easy)
+
+[Leetcode](https://leetcode.com/problems/sqrtx/description/) / [力扣](https://leetcode-cn.com/problems/sqrtx/description/)
+
+### Solution 1：brute force
+
+小心i*i会溢出，所以要转换成long进行比较。
+
+从0开始遍历到x-1，如果i*i <= x 则i++。否则跳出循环，返回i-1。
+
+### Solution 2：二分查找
+
+循环条件，h l mid如何定义，我觉得拿个例子去试就ok
+
+## 744 大于给定元素的最小元素
+
+744. Find Smallest Letter Greater Than Target (Easy)
+
+[Leetcode](https://leetcode.com/problems/find-smallest-letter-greater-than-target/description/) / [力扣](https://leetcode-cn.com/problems/find-smallest-letter-greater-than-target/description/)
+
+### Solution 1：记录看过的字母
+
+创建一个容量为26的布尔数组，将letter里面出现过的字母标记为true。
+
+然后开始遍历那个布尔数组，每次循环target+1，因为要找比target大的。
+
+如果target > z， 把target设置为a，否则保持target，然后判断+1后的target是否为true
+
+Complexity Analysis
+
+- Time Complexity: O(N), where N is the length of letters  We scan every element of the array.
+- Space Complexity: O(1), the maximum size of seen 
+
+### Solution 2：linear scan
+
+就是我说的遍历，然后一个个比大小咯
+
+Complexity Analysis
+
+- Time Complexity: O(N) , where N is the length of letters . We scan every element of the array.
+- Space Complexity: O(1) , as we maintain only pointers.
+
+### Solution 3：binary search
+
+Complexity Analysis
+
+- Time Complexity: O(log N), where N is the length of letters . We peek only at log N elements in the array.
+- Space Complexity: O(1), as we maintain only pointers.
+
+## 540 有序数组的 Single Element
+
+540. Single Element in a Sorted Array (Medium)
+
+[Leetcode](https://leetcode.com/problems/single-element-in-a-sorted-array/description/) / [力扣](https://leetcode-cn.com/problems/single-element-in-a-sorted-array/description/)
+
+### Solution 1：brute force
+
+暴力遍历，从i = 0 遍历到 len - 1. 循环条件while( i < len - 1)。
+
+如果nums[i] != nums[i+1]，return nums[i]。否则，i += 2.
+
+最后返回nums[i];
+
+### Solution 2：binary search
+
+看我的代码+ipad上分析
+
+### Solution 3：github上的二分查找
+
+要求以 O(logN) 时间复杂度进行求解，因此不能遍历数组并进行异或操作来求解，这么做的时间复杂度为 O(N)。
+
+令 index 为 Single Element 在数组中的位置。在 index 之后，数组中原来存在的成对状态被改变。如果 m 为偶数，并且 m + 1 < index，那么 nums[m] == nums[m + 1]；m + 1 >= index，那么 nums[m] != nums[m + 1]。
+
+从上面的规律可以知道，如果 nums[m] == nums[m + 1]，那么 index 所在的数组位置为 [m + 2, h]，此时令 l = m + 2；如果 nums[m] != nums[m + 1]，那么 index 所在的数组位置为 [l, m]，此时令 h = m。
+
+因为 h 的赋值表达式为 h = m，那么循环条件也就只能使用 l < h 这种形式。
+
+## 278 第一个错误的版本
+
+278. First Bad Version (Easy)
+
+[Leetcode](https://leetcode.com/problems/first-bad-version/description/) / [力扣](https://leetcode-cn.com/problems/first-bad-version/description/)
+
+### Solution 1：二分查找
+
+跟前面说的【在一个有重复元素的数组中查找 key 的最左位置】很类似
+
+## 153 旋转数组的最小数字
+
+153. Find Minimum in Rotated Sorted Array (Medium)
+
+[Leetcode](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/) / [力扣](https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/description/)
+
+### Solution 1：二分法
+
+【不能局限于m-1 m m+1 还要看两头】
+
+当 m-1 < m < m+1 的时候 有可能是123 在左边也有可能是 2341在右边
+
+如果没有旋转
+
+![image-20211029214334760](LeetCode.assets/image-20211029214334760.png)
+
+有旋转
+
+![image-20211029214409518](LeetCode.assets/image-20211029214409518.png)
+
+如果有旋转则存在一个折射点
+
+![image-20211029214454029](LeetCode.assets/image-20211029214454029.png)
+
+**算法**
+
+1 找到数组的中间元素
+
+2 如果中间元素大于第一个元素，我们要找的折射点在右边
+
+3 如果中间元素小于第一个元素 我们要找的点就在左边
+
+`nums[mid] > nums[mid + 1]` Hence, **mid+1** is the smallest.
+
+`nums[mid - 1] > nums[mid]` Hence, **mid** is the smallest.
+
+Complexity Analysis
+
+- Time Complexity : Same as Binary Search O(log N)
+
+- Space Complexity : o(1)
+
+### Solution 2：暴力法
+
+遍历数组，然后找到最小的数，时间复杂度O(N)
+
+### Solution 3：排序
+
+我想到的，实在不行就排序，然后取第一个元素，hhh
+
+## 34 查找区间
+
+34. Find First and Last Position of Element in Sorted Array
+
+[Leetcode](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/) / [力扣](https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/)
+
+### Solution 1：二分法
+
+我觉得就是找重复的最左最右问题。跟前面说的【在一个有重复元素的数组中查找 key 的最左位置】很类似
+
+我先利用前面的模板找到最左，然后从最左开始直接遍历而不是再用二分法去找最右。
+
+### Solution 2：暴力查找
+
+实在不行就这样
+
+### Solution 3：github
+
+可以用二分查找找出第一个位置和最后一个位置，但是寻找的方法有所不同，需要实现两个二分查找。我们将寻找 target 最后一个位置，转换成寻找 target+1 第一个位置，再往前移动一个位置。这样我们只需要实现一个二分查找代码即可。
+
+在寻找第一个位置的二分查找代码中，需要注意 h 的取值为 nums.length，而不是 nums.length - 1。先看以下示例：
+
+```
+nums = [2,2], target = 2
+```
+
+如果 h 的取值为 nums.length - 1，那么 last = findFirst(nums, target + 1) - 1 = 1 - 1 = 0。这是因为 findLeft 只会返回 [0, nums.length - 1] 范围的值，对于 findFirst([2,2], 3) ，我们希望返回 3 插入 nums 中的位置，也就是数组最后一个位置再往后一个位置，即 nums.length。所以我们需要将 h 取值为 nums.length，从而使得 findFirst返回的区间更大，能够覆盖 target 大于 nums 最后一个元素的情况。
+
