@@ -885,3 +885,244 @@ nums = [2,2], target = 2
 
 如果 h 的取值为 nums.length - 1，那么 last = findFirst(nums, target + 1) - 1 = 1 - 1 = 0。这是因为 findLeft 只会返回 [0, nums.length - 1] 范围的值，对于 findFirst([2,2], 3) ，我们希望返回 3 插入 nums 中的位置，也就是数组最后一个位置再往后一个位置，即 nums.length。所以我们需要将 h 取值为 nums.length，从而使得 findFirst返回的区间更大，能够覆盖 target 大于 nums 最后一个元素的情况。
 
+### 二分法模板
+
+【但我觉得还是前面整理的好理解，这个是来自这题的LeetCode-cn的】
+
+模板1
+当我们将区间[l, r]划分成[l, mid]和[mid + 1,r]时，其更新操作是r= mid或者l= mid +1，计算mid时不需要加1，即mid = (l + r)/2。
+
+```java
+int bsearch_1(int l, int r)
+{
+    while (l < r)
+    {
+        int mid = (l + r)/2;
+        if (check(mid)) r = mid;
+        else l = mid + 1;
+    }
+    return l;
+}
+```
+
+模板2
+当我们将区间[l,r]划分成[l, mid - 1]和[mid, r]时，其更新操作是r = mid - 1或者l = mid，此时为了防止死循环，计算mid时需要加1，即mid = ( l+r+ 1 )/2。
+
+```java
+int bsearch_2(int l, int r)
+{
+    while (l < r)
+    {
+        int mid = ( l + r + 1 ) /2;
+        if (check(mid)) l = mid;
+        else r = mid - 1;
+    }
+    return l;
+}
+```
+
+**为什么两个二分模板的mid取值不同?**
+对于第二个模板，当我们更新区间时，如果左边界I更新为|=mid，此时mid的取值就应为mid = (l + r + 1)/2。因为当右边界r =l+1时，此时mid = (l +l +1)/2，相当于下取整，mid 为l，左边界再次更新为l = mid =l，相当于没有变化。while循环就会陷入死循环。因此，我们总结出来一个小技巧，当左边界要更新为l= mid时，我们就令mid =(l + r + 1)/2,相当于上取整，此时就不会因为r取特殊值r =l+1而陷入死循环了。
+
+而对于第一个模板，如果左边界I更新为l = mid + 1 ，是不会出现这样的困扰的。因此，大家可以熟记这两个二分模板，基本可以解决99%以上的二分问题，再也不会被二分的边界取值所困扰了。
+
+# 分治
+
+## 241 给表达式加括号
+
+241. Different Ways to Add Parentheses (Medium)
+
+[Leetcode](https://leetcode.com/problems/different-ways-to-add-parentheses/description/) / [力扣](https://leetcode-cn.com/problems/different-ways-to-add-parentheses/description/)
+
+### Solution 1：递归
+
+遍历到一个运算符，然后递归调用原方法，得到运算符左边和运算符右边的可能值，两者组合求得最终结果。
+
+### Solution 2：dp
+
+[leetcode解析](https://leetcode.com/problems/different-ways-to-add-parentheses/discuss/66333/Java-recursive-(9ms)-and-dp-(4ms)-solution)
+
+【这个看了半天代码没看懂】
+
+用`String.substring()`很浪费时间，所以将字符串解析成一个list，会发现所有数字都是在偶数位，运算符都在奇数位。
+
+```
+"1", "+", "2", "+", "3", "+", "4"
+```
+
+然后这个问题就变得很像`Unique Binary Search Trees II`。对于list中的每一个运算符，我们计算所有运算符左边所有可能的结果`List<Integer> left`，也计算运算符右边的所有可能的结果`List<Integer> right`, 然后将结果结合，可以通过递归或dp实现
+
+## 95 不同的二叉搜索树
+
+95. Unique Binary Search Trees II (Medium)
+
+[Leetcode](https://leetcode.com/problems/unique-binary-search-trees-ii/description/) / [力扣](https://leetcode-cn.com/problems/unique-binary-search-trees-ii/description/)
+
+### Solution 1：递归
+
+看我的代码，写了超级久，思路对的，但是一堆bug，还好最终调试通过了！
+
+# 搜索
+
+## BFS
+
+![image-20211030135117407](LeetCode.assets/image-20211030135117407.png)
+
+广度优先搜索一层一层地进行遍历，每层遍历都是以上一层遍历的结果作为起点，遍历一个距离能访问到的所有节点。需要注意的是，遍历过的节点不能再次被遍历。
+
+第一层：
+
+- 0 -> {6,2,1,5}
+
+第二层：
+
+- 6 -> {4}
+- 2 -> {}
+- 1 -> {}
+- 5 -> {3}
+
+第三层：
+
+- 4 -> {}
+- 3 -> {}
+
+每一层遍历的节点都与根节点距离相同。设 di 表示第 i 个节点与根节点的距离，推导出一个结论：对于先遍历的节点 i 与后遍历的节点 j，有 di <= dj。利用这个结论，可以求解最短路径等 **最优解** 问题：第一次遍历到目的节点，其所经过的路径为最短路径。应该注意的是，使用 BFS 只能求解无权图的最短路径，无权图是指从一个节点到另一个节点的代价都记为 1。
+
+在程序实现 BFS 时需要考虑以下问题：
+
+- 队列：用来存储每一轮遍历得到的节点；
+- 标记：对于遍历过的节点，应该将它标记，防止重复遍历。
+
+### 1091 计算在网格中从原点到特定点的最短路径长度
+
+1091. Shortest Path in Binary Matrix(Medium)
+
+[Leetcode](https://leetcode.com/problems/shortest-path-in-binary-matrix/) / [力扣](https://leetcode-cn.com/problems/shortest-path-in-binary-matrix/)
+
+#### Solution 1：BFS + Queue
+
+求最短路径通常使用广度优先搜索，可以用队列实现。
+
+从下标 [0,0] 开始遍历，每次寻找该点的八个方向是否可走，若可走就入队，继续执行该操作，最后走到 [n-1,n-1] 时，此时执行最外层循环的次数便是最短路径长度。（类似二叉树的层序遍历）
+
+Leetcode上的最短路问题大部分是无权的图往往以二维数组的形式出现用BFS是效率比较高的做法，相比于DFS来说
+我们从下标[0,0]开始遍历尝试相邻的8个方向合法就入队
+为了让遍历的层数可追溯我们遍历的过程采用两层循环，外层判断是否队列已经为空。不为空先记录当前queue的size，再用一个循环处理size数量的queue，循环过程中当然可能会继续往队列里放入元素，那些元素就不在本层的处理逻辑里了。外层循环里可以用一个变量，比如ans标记当前遍历到哪一层，在当前层的循环完成后，ans++，就进入下一层的BFS循环，直到所有元素被遍历完成。这是常见的BFS追溯层数的套路。
+
+### 279 组成整数的最小平方数数量
+
+279. Perfect Squares (Medium)
+
+[Leetcode](https://leetcode.com/problems/perfect-squares/description/) / [力扣](https://leetcode-cn.com/problems/perfect-squares/description/)
+
+#### Solution 1：bfs
+
+可以将每个整数看成图中的一个节点，如果两个整数之差为一个平方数，那么这两个整数所在的节点就有一条边。
+
+要求解最小的平方数数量，就是求解从节点 n 到节点 0 的最短路径。
+
+本题也可以用动态规划求解，在之后动态规划部分中会再次出现。
+
+具体看代码注释
+
+### 127 最短单词路径
+
+127. Word Ladder (Medium)
+
+[Leetcode](https://leetcode.com/problems/word-ladder/description/) / [力扣](https://leetcode-cn.com/problems/word-ladder/description/)
+
+#### Solution 1：bfs + 最短路
+
+跟上一题的思路一模一样
+
+## DFS
+
+![image-20211031150439049](LeetCode.assets/image-20211031150439049.png)
+
+广度优先搜索一层一层遍历，每一层得到的所有新节点，要用队列存储起来以备下一层遍历的时候再遍历。
+
+而深度优先搜索在得到一个新节点时立即对新节点进行遍历：从节点 0 出发开始遍历，得到到新节点 6 时，立马对新节点 6 进行遍历，得到新节点 4；如此反复以这种方式遍历新节点，直到没有新节点了，此时返回。返回到根节点 0 的情况是，继续对根节点 0 进行遍历，得到新节点 2，然后继续以上步骤。
+
+从一个节点出发，使用 DFS 对一个图进行遍历时，能够遍历到的节点都是从初始节点可达的，DFS 常用来求解这种 **可达性** 问题。
+
+在程序实现 DFS 时需要考虑以下问题：
+
+- 栈：用栈来保存当前节点信息，当遍历新节点返回时能够继续遍历当前节点。可以使用递归栈。
+- 标记：和 BFS 一样同样需要对已经遍历过的节点进行标记。
+
+### 695 查找最大的连通面积
+
+695. Max Area of Island (Medium)
+
+[Leetcode](https://leetcode.com/problems/max-area-of-island/description/) / [力扣](https://leetcode-cn.com/problems/max-area-of-island/description/)
+
+#### Solution 1：depth-first search recursive 
+
+Complexity Analysis
+
+- Time Complexity: O(R * C), where R is the number of rows in the given grid , and C is the number of columns. We visit every square once.
+- Space complexity:O(R * C) , the space used by seen to keep track of visited squares, and the space used by the call stack during our recursion.
+
+#### Solution 2：depth-first search iterative
+
+通过栈来实现迭代。
+
+如果起始方块没被seen，就继续探索绕在他四个分析的反馈，并将方块加入到栈中。
+
+Complexity Analysis
+
+- Time Complexity: O(R * C), where R is the number of rows in the given grid , and C is the number of columns. We visit every square once.
+- Space complexity: O(R * C), the space used by seen to keep track of visited squares, and the space used by stack .
+
+#### Solution 3：BFS
+
+居然还可以不用多一个数组标记是否看过 看代码。方法从LeetCode comment看到的
+
+### 200 矩阵中的连通分量数目
+
+200. Number of Islands (Medium)
+
+[Leetcode](https://leetcode.com/problems/number-of-islands/description/) / [力扣](https://leetcode-cn.com/problems/number-of-islands/description/)
+
+这题跟`695 查找最大的连通面积`思路基本一样，不过一个是计算面积，一个是计算岛屿的个数
+
+### 547 好友关系的连通分量数目
+
+547. Friend Circles (Medium)
+
+[Leetcode](https://leetcode.com/problems/friend-circles/description/) / [力扣](https://leetcode-cn.com/problems/friend-circles/description/)
+
+跟前面的很像，不过是有对称关系。
+
+### 130 填充封闭区域
+
+130. Surrounded Regions (Medium)
+
+[Leetcode](https://leetcode.com/problems/surrounded-regions/description/) / [力扣](https://leetcode-cn.com/problems/surrounded-regions/description/)
+
+#### Solution 1：我的方法
+
+跟前面的遍历一样，也是dfs，不同的是
+
+1 引入seen判断是否看过
+
+2 在dfs中遍历时遇到O先改为'1' 
+
+3 dfs返回的是flag，如果为true，说明这个区域有靠近边界的，将1修改回O，否则要进行修改，将1改为X
+
+#### Solution 2：填充最外层
+
+先填充最外侧，剩下的就是里侧了。
+
+在dfs的时候直接找边界的，将O变成T，这样的话就可以把连接边界的O全部变成T。
+
+然后再遍历全部，将余下的O变成X，将T变成O。
+
+太机智了！
+
+### 417  能到达的太平洋和大西洋的区域
+
+417. Pacific Atlantic Water Flow (Medium)
+
+[Leetcode](https://leetcode.com/problems/pacific-atlantic-water-flow/description/) / [力扣](https://leetcode-cn.com/problems/pacific-atlantic-water-flow/description/)
+
