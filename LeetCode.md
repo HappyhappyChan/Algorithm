@@ -1126,3 +1126,410 @@ Complexity Analysis
 
 [Leetcode](https://leetcode.com/problems/pacific-atlantic-water-flow/description/) / [力扣](https://leetcode-cn.com/problems/pacific-atlantic-water-flow/description/)
 
+跟130很像，要学会逆向思考啊，从最后流出去的倒推
+
+## Backtracking
+
+Backtracking（回溯）属于 DFS。
+
+- 普通 DFS 主要用在 **可达性问题** ，这种问题只需要执行到特点的位置然后返回即可。
+- 而 Backtracking 主要用于求解 **排列组合** 问题，例如有 { 'a','b','c' } 三个字符，求解所有由这三个字符排列得到的字符串，这种问题在执行到特定的位置返回之后还会继续执行求解过程。
+
+因为 Backtracking 不是立即返回，而要继续求解，因此在程序实现时，需要注意对元素的标记问题：
+
+- 在访问一个新元素进入新的递归调用时，需要将新元素标记为已经访问，这样才能在继续递归调用时不用重复访问该元素；
+- 但是在递归返回时，需要将元素标记为未访问，因为只需要保证在一个递归链中不同时访问一个元素，可以访问已经访问过但是不在当前递归链中的元素。
+
+### 17 数字键盘组合
+
+17. Letter Combinations of a Phone Number (Medium)
+
+[Leetcode](https://leetcode.com/problems/letter-combinations-of-a-phone-number/description/) / [力扣](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/description/)
+
+#### Solution 1：暴力法
+
+建立一个String数组map，每个位置放对应的字符串，如 map[2] = "abc"，map[9] = "wxyz"
+
+将digit分解成各个数字，存进list. 然后
+
+```java
+int size = list.size();
+Stringbuilder sb = new Stringbuilder;
+int cnt = 0;
+String s1 = list.get(cnt);
+cnt++;
+for(int i = 0; i < s1.length(); i++){
+    Stringbuilder sb = new Stringbuilder;
+    sb.append(i);
+    sb.append(dfs(cnt, list));
+}
+//dfs(cnt, list) 用来获取剩下的字符
+//退出条件 cnt >= s.length();
+```
+
+但上面是我瞎想的，代码没敲，感觉不太想
+
+#### Solution 2：回溯
+
+获取当前digit对应的string，然后开始遍历string，开始时将对应字符加入prefix， 然后递归digit对应的下一个string，递归结束后删除加入prefix的字符。
+
+#### Solution 3：FIFO queue
+
+```java
+for(int i = 0; i < digits.length(); i++){
+    int x = Character.getNumericValue(digits.charAt(i));
+    while(ans.peek().length() == i){
+        //删除并返回第一个元素。
+        String t = ans.remove();
+        for(char s: map[x].toCharArray()){
+            ans.add(t+s);
+        }
+    }
+}
+```
+
+```java
+ans.add("");
+while(ans.peek().length() != digits.length()){
+    String remove = ans.remove();
+    String m = map[digits.charAt(remove.length()) - '0'];
+    for(char c: m.toCharArray()){
+        //元素添加到尾部
+        ans.addLast(remove+c);
+        //试过了 用add也可以
+    }
+}
+```
+
+### 93 IP 地址划分
+
+93. Restore IP Addresses(Medium)
+
+[Leetcode](https://leetcode.com/problems/restore-ip-addresses/description/) / [力扣](https://leetcode-cn.com/problems/restore-ip-addresses/description/)
+
+[YouTube解析](https://www.youtube.com/watch?v=nxBMEvLqDzY)
+
+上面的解析讲的很好，结合解析和代码一起看
+
+### 79 在矩阵中寻找字符串
+
+79. Word Search (Medium)
+
+[Leetcode](https://leetcode.com/problems/word-search/description/) / [力扣](https://leetcode-cn.com/problems/word-search/description/)
+
+我自己写了很久终于通过了，但是效率都没有github上面的好
+
+### 257 输出二叉树中所有从根到叶子的路径
+
+257. Binary Tree Paths (Easy)
+
+[Leetcode](https://leetcode.com/problems/binary-tree-paths/description/) / [力扣](https://leetcode-cn.com/problems/binary-tree-paths/description/)
+
+### 46 排列
+
+46. Permutations (Medium)
+
+[Leetcode](https://leetcode.com/problems/permutations/description/) / [力扣](https://leetcode-cn.com/problems/permutations/description/)
+
+### 47 含有相同元素求排列
+
+47. Permutations II (Medium)
+
+[Leetcode](https://leetcode.com/problems/permutations-ii/description/) / [力扣](https://leetcode-cn.com/problems/permutations-ii/description/)
+
+#### Solution 0
+
+在实现上，和 Permutations 不同的是要先排序，然后在添加一个元素时，判断这个元素是否等于前一个元素，如果等于，并且前一个元素还未访问，那么就跳过这个元素。
+
+```java
+if(i>0 &&nums[i-1]==nums[i] && !used[i-1]) continue;
+```
+
+The difficulty is to handle the duplicates.
+With inputs as `[1a, 1b, 2a]`,
+If we don't handle the duplicates, the results would be: `[1a, 1b, 2a], [1b, 1a, 2a]...`,
+so we must make sure `1a` goes before `1b` to avoid duplicates
+By using `nums[i-1]==nums[i] && !used[i-1]`, we can make sure that `1b` cannot be choosed before `1a`
+
+#### Solution 1：backtracking with  groups of numbers
+
+为了防止冗余，我们只考虑unique number作为真正的candidate
+
+Algorithm
+
+建立一个hashmap 叫做counter <number, number of occurrence>
+
+然后建立一个函数backtrack(comb, counter)， comb是当前数字的组合
+
+#### Solution 2：HashSet
+
+跟46同样的做法，不过是加入hashset去重
+
+```java
+if(permutation.size() == nums.length){
+    set.add(new ArrayList<Integer>(permutation));
+    return;
+}
+return new ArrayList(set);
+```
+
+### 77 组合
+
+77. Combinations (Medium)
+
+[Leetcode](https://leetcode.com/problems/combinations/description/) / [力扣](https://leetcode-cn.com/problems/combinations/description/)
+
+#### Solution 1：类似47
+
+我自己想的 ，不过continue实现的条件不是num[i]和num[i-1] seen[i-1]比，而是要求后面加入的数不能比前面加入的数大，否则会重复
+
+### 39 组合求和
+
+39. Combination Sum (Medium)
+
+[Leetcode](https://leetcode.com/problems/combination-sum/description/) / [力扣](https://leetcode-cn.com/problems/combination-sum/description/)
+
+跟`77 组合`类似，只是return的语句有些差异。
+
+### 40 含有相同元素的组合求和
+
+40. Combination Sum II (Medium)
+
+[Leetcode](https://leetcode.com/problems/combination-sum-ii/description/) / [力扣](https://leetcode-cn.com/problems/combination-sum-ii/description/)
+
+#### Solution 1：mine
+
+根据39和前面的77 代码改编一下即可。
+
+#### Solution 2：backtracking with counters
+
+counter的思路：不将每个数字当做一个candidate，而是将整个group里面的unique number才当做candidate
+
+![image-20211102154433790](LeetCode.assets/image-20211102154433790.png)
+
+**Algorithm**
+
+1. 建立一个hashmap表counter，记录每个数字对应出现的次数
+2. 定义回溯函数backtrack(comb, remain, curr, candidate_groups, results)
+   1. comb：到目前为止我们建立的组合
+   2. remain：需要我们去凑够的剩下的sum
+   3. curr：用来指明遍历到哪个unique group的指针
+   4. counter：当前用来计数的表
+   5. results：存放满足target sum的最终组合
+3. 每次调用backtrack， 第一步是判断`sum(comb) == target`，如果sum > target，我们就停止探索
+4. 如果sum<target，我们就要遍历当前计数器表以选择下一个候选者。
+   1. 一旦我们选择了一个候选者，我们就会通过调用具有更新状态的 backtrack() 函数来继续探索。
+   2. 更重要的是，在每次探索结束时，我们需要恢复之前更新的状态，以便为下一次探索重新开始。 正是由于这种回溯操作，该算法才得名。
+
+时间复杂度：O(2^N)
+
+空间复杂度：O(N)
+
+#### Solution 3：Backtracking with index
+
+和Solution 2不同的是，直接sort数组而非根据数组建立一个counter table。
+
+![image-20211102160155974](LeetCode.assets/image-20211102160155974.png)
+
+1). `next_curr > curr`:无论其他条件如何，我们都会选择当前当前位置的数字到组合中。
+
+2). `candidates[next_curr] == candidates[next_curr-1]`我们将跳过中间所有重复数字的出现
+
+**Algorithm**
+
+1. 和solution 2一样，依旧用backtrack， 但是函数定义少了counter， backtrack(comb, remain, curr, candidate_groups, results)
+2. 该函数的大部分内容与 39. Combination Sum 的解决方案相同，除了我们之前讨论过的索引上的特定条件。
+3. 通过early stopping来优化回溯，即一旦当前组合的总和超过目标，我们可以停止对其余数字的探索。 因为所有的数字都是正数，正如问题中所指定的，组合的总和将单调增加。 无需探索更多总和超出所需目标的组合。
+
+时间复杂度：O(2^N)
+
+空间复杂度：O(N)
+
+### 216  1-9 数字的组合求和
+
+216. Combination Sum III (Medium)
+
+[Leetcode](https://leetcode.com/problems/combination-sum-iii/description/) / [力扣](https://leetcode-cn.com/problems/combination-sum-iii/description/)
+
+跟前面的47 77 39 40 有异曲同工之处，学套路，会套了就简单了。
+
+### 78 子集
+
+78. Subsets (Medium)
+
+[Leetcode](https://leetcode.com/problems/subsets/description/) / [力扣](https://leetcode-cn.com/problems/subsets/description/)
+
+```java
+//数组变list
+List list = Arrays.asList(strArray);
+```
+
+跟前面的代码很类似
+
+前面的`Permutations / Combinations / Subsets`， 他们都非常相似，而且有共同的解决策略
+
+First, their solution space is often quite large:
+- Permutations: $N !$
+- Combinations: $C_{N}^{k}=\frac{N !}{(N-k) ! k !}$
+- Subsets: $2^{N}$, since each element could be absent or present.
+
+一般来说有以下3种策略：
+
+- Recursion
+- Backtracking
+- Lexicographic generation based on the mapping between binary bitmasks and the corresponding
+  permutations / combinations / subsets.
+
+前2种方法都很复杂，第三种方法才是面试官想要看到的，因为它将问题简化为二进制数的生成，因此很容易实现并验证没有解决方案丢失。此外，该方法具有最佳的时间复杂度，并且作为奖励，它为已排序的输入生成按字典顺序排序的输出。
+
+#### Solution 1：Cascading
+
+让我们从输出列表中的空子集开始。 在每一步都考虑新的整数并从现有的子集生成新的子集。
+
+![image-20211102165545330](LeetCode.assets/image-20211102165545330.png)
+
+- Time complexity: $\mathcal{O}(N \times 2^N)$ to generate all subsets and then copy them into output list.
+- Space complexity: $\mathcal{O}(N \times 2^N)$. This is exactly the number of solutions for subsets multiplied by the number $N$ of elements to keep for each subset.
+  - For a given number, it could be present or absent (*i.e.* binary choice) in a subset solution. As as result, for $N$ numbers, we would have in total $2^N$ choices (solutions).
+
+#### Solution 2：Backtracking
+
+这个问题也可以被定义为finding the power set from a sequence.【找幂集？】
+
+我们遍历组合的长度，而不是候选数字，并借助回溯技术生成给定长度的所有组合。
+
+![image-20211102170136754](LeetCode.assets/image-20211102170136754.png)
+
+![image-20211102170214960](LeetCode.assets/image-20211102170214960.png)
+
+这个思路跟我和github的思路一样
+
+**Complexity Analysis**
+
+- Time complexity: $\mathcal{O}(N \times 2^N)$ to generate all subsets and then copy them into output list.
+- Space complexity: $\mathcal{O}(N)$. We are using $O(N)$space to maintain `curr`, and are modifying `curr` in-place with backtracking. Note that for space complexity analysis, we do not count space that is *only* used for the purpose of returning output, so the `output` array is ignored.
+
+#### Solution 3：Lexicographic (Binary Sorted) Subsets
+
+The idea of this solution is originated from [Donald E. Knuth](https://www-cs-faculty.stanford.edu/~knuth/taocp.html).
+
+> The idea is that we map each subset to a bitmask of length n, where `1` on the i*th* position in bitmask means the presence of `nums[i]` in the subset, and `0` means its absence.
+
+![image-20211102170521928](LeetCode.assets/image-20211102170521928.png)
+
+bitmask[0,0,0]对应一个空子集，而bitmask[1,1,1]对应一个全集
+
+所以我们只需要生成n位的bitmsk从0..00到1.11即可
+
+难点在于解决 [zero left padding](https://en.wikipedia.org/wiki/Padding_(cryptography)#Zero_padding)。 因为要生成的是001而不是1.可以通过一下trick解决
+
+```java
+int nthBit = 1 << n;
+for (int i = 0; i < (int)Math.pow(2, n); ++i) {
+    // generate bitmask, from 0..00 to 1..11
+    String bitmask = Integer.toBinaryString(i | nthBit).substring(1);
+```
+
+或者直接简单地改变迭代限制
+
+```java
+for (int i = (int)Math.pow(2, n); i < (int)Math.pow(2, n + 1); ++i) {
+  // generate bitmask, from 0..00 to 1..11
+  String bitmask = Integer.toBinaryString(i).substring(1);
+```
+
+**Algorithm**
+
+- Generate all possible binary bitmasks of length n.
+- Map a subset to each bitmask: `1` on the i*th* position in bitmask means the presence of `nums[i]` in the subset, and `0` means its absence.
+- Return output list.
+
+**Complexity Analysis**
+
+- Time complexity: $\mathcal{O}(N \times 2^N)$ to generate all subsets and then copy them into output list.
+- Space complexity: $\mathcal{O}(N \times 2^N)$ to keep all the subsets of length $N$, since each of $N$ elements could be present or absent.
+
+### 90 含有相同元素求子集
+
+90. Subsets II (Medium)
+
+[Leetcode](https://leetcode.com/problems/subsets-ii/description/) / [力扣](https://leetcode-cn.com/problems/subsets-ii/description/)
+
+这种有重复元素，又要求结果不能重复的，就要用到
+
+```java
+Arrays.sort(nums);
+boolean[] seen = new boolean[nums.length];
+//判断条件
+if(i != 0 && nums[i] == nums[i-1] && !seen[i])
+    continue;
+```
+
+### 131 分割字符串使得每个部分都是回文数
+
+131. Palindrome Partitioning (Medium)
+
+[Leetcode](https://leetcode.com/problems/palindrome-partitioning/description/) / [力扣](https://leetcode-cn.com/problems/palindrome-partitioning/description/)
+
+我自己想出来了，思路和github一样
+
+#### Solution 1：Backtracking
+
+The backtracking algorithms consists of the following steps:
+
+- *Choose*: Choose the potential candidate. Here, our potential candidates are all substrings that could be generated from the given string.
+- *Constraint*: Define a constraint that must be satisfied by the chosen candidate. In this case, the constraint is that the string must be a *palindrome*.
+- *Goal*: We must define the goal that determines if have found the required solution and we must backtrack. Here, our goal is achieved if we have reached the end of the string.
+
+我的思路：
+
+1 在输入的字符串中，从头开始逐个遍历，利用s.substring(0, j)获得字符串pre。
+
+2 判断字符串pre是否是回文，如果是则加入curList，然后利用s.substring(j)得到下一步backtracking需要输入的字符串next。
+
+3 backtracking完后，将curList最后加入的字符串删除，进行回溯
+
+4 当next的长度为0，说明已经遍历完了，则return。要记住s.length()==0 和 s\==null是不一样的！
+
+**Complexity Analysis**
+
+- Time Complexity : $\mathcal{O}(N \cdot 2^{N})$, where $N$ is the length of string $s$. This is the worst-case time complexity when all the possible substrings are palindrome.
+
+![image-20211102214115831](LeetCode.assets/image-20211102214115831.png)
+
+Hence, there could be $2^{N}$ possible substrings in the worst case. For each substring, it takes $\mathcal{O}(N) $time to generate substring and determine if it a palindrome or not. This gives us time complexity as $\mathcal{O}(N \cdot 2^{N})$
+
+- Space Complexity: $\mathcal{O}(N)$, where $N$ is the length of the string $s$. This space will be used to store the recursion stack. For s = `aaa`, the maximum depth of the recursive call stack is 3 which is equivalent to $N$.
+
+#### Solution 2：backtracking & dynamic programming
+
+前一种方法执行一次额外的迭代来确定给定的子串是否是回文串。 在这里，我们多次重复迭代同一个子串，结果总是相同的。 存在重叠子问题，我们可以通过使用动态规划来进一步优化该方法，以确定一个字符串在恒定时间内是否是回文。 让我们详细了解该算法。
+
+**Algorithm**
+
+给一个字符串s的开始指针start和结束指针end，如果s是一个回文串，则满足以下限制：
+
+1. s.charAt(start) == s.chartAt(end);
+2. s的子串从start+1到end-1也是一个回文串
+
+![image-20211102214537013](LeetCode.assets/image-20211102214537013.png)
+
+字符串s的长度为N，判断一个位于[start, end]的子串是否是回文，用一个NxN的二维数组dp来记录。
+
+其中$dp[start][end]=true$ , 说明[start, end]这段子串是回文，否则是false。
+
+当我们发现当前子串是回文的时候要update数组dp
+
+**Complexity Analysis**
+
+- Time Complexity : $\mathcal{O}(N \cdot 2^{N})$, where $N$ is the length of string $s$ In the worst case, there could be $2^{N}$ possible substrings and it will take $\mathcal{O}(N)$ to generate each substring using `substr` as in *Approach 1*. However, we are eliminating one additional iteration to check if substring is a palindrome or not.
+- Space Complexity: $\mathcal{O}(N \cdot N)$, where $N$ is the length of the string $s$. The recursive call stack would require $N$ space as in *Approach 1*. Additionally we also use 2 dimensional array $\text{dp}$ of size $N \cdot N$
+
+This gives us total space complexity as$ \mathcal{O}(N \cdot N)$ + $\mathcal{O}(N)$ = $\mathcal{O}(N \cdot N)$
+
+### 37  数独
+
+37. Sudoku Solver (Hard)
+
+[Leetcode](https://leetcode.com/problems/sudoku-solver/description/) / [力扣](https://leetcode-cn.com/problems/sudoku-solver/description/)
+
