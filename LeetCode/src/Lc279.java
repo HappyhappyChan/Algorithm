@@ -12,7 +12,7 @@ import java.util.Queue;
  * @Date: 2021/10/30 17:43
  **/
 public class Lc279 {
-    //1 github
+    //1 github 搜索的bfs
     public int numSquares(int n) {
         List<Integer> squares = generateSquares(n);
         Queue<Integer> que = new LinkedList<Integer>();
@@ -62,5 +62,26 @@ public class Lc279 {
         return squares;
     }
 
-
+    //2 github 动态规划
+    public int numSquares2(int n){
+        List<Integer> squares = generateSquares(n);
+        int[] dp = new int[n+1];
+        for(int i = 1; i <= n; i++){
+            int min = Integer.MAX_VALUE;
+            for(int square : squares){
+                if(square > i)
+                    break;
+                // To get the value of dp[n], we should choose the min
+                // value from:
+                //     dp[n - 1] + 1,
+                //     dp[n - 4] + 1,
+                //     dp[n - 9] + 1,
+                //     dp[n - 16] + 1
+                //     and so on...
+                min = Math.min(min, dp[i-square] + 1);
+            }
+            dp[i] = min;
+        }
+        return dp[n];
+    }
 }
