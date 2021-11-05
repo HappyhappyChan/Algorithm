@@ -986,7 +986,7 @@ int bsearch_2(int l, int r)
 - 4 -> {}
 - 3 -> {}
 
-每一层遍历的节点都与根节点距离相同。设 di 表示第 i 个节点与根节点的距离，推导出一个结论：对于先遍历的节点 i 与后遍历的节点 j，有 di <= dj。利用这个结论，可以求解最短路径等 **最优解** 问题：第一次遍历到目的节点，其所经过的路径为最短路径。应该注意的是，使用 BFS 只能求解无权图的最短路径，无权图是指从一个节点到另一个节点的代价都记为 1。
+每一层遍历的节点都与根节点距离相同。设 di 表示第 i 个节点与根节点的距离，推导出一个结论：对于先遍历的节点 i 与后遍历的节点 j，有 di <= dj。利用这个结论，可以求解最短路径等 **最优解** 问题：第一次遍历到目的节点，其所经过的路径为最短路径。**应该注意的是，使用 BFS 只能求解无权图的最短路径，无权图是指从一个节点到另一个节点的代价都记为 1**。
 
 在程序实现 BFS 时需要考虑以下问题：
 
@@ -1005,7 +1005,7 @@ int bsearch_2(int l, int r)
 
 从下标 [0,0] 开始遍历，每次寻找该点的八个方向是否可走，若可走就入队，继续执行该操作，最后走到 [n-1,n-1] 时，此时执行最外层循环的次数便是最短路径长度。（类似二叉树的层序遍历）
 
-Leetcode上的最短路问题大部分是无权的图往往以二维数组的形式出现用BFS是效率比较高的做法，相比于DFS来说
+Leetcode上的最短路问题大部分是**无权的图**往往以二维数组的形式出现用BFS是效率比较高的做法，相比于DFS来说
 我们从下标[0,0]开始遍历尝试相邻的8个方向合法就入队
 为了让遍历的层数可追溯我们遍历的过程采用两层循环，外层判断是否队列已经为空。不为空先记录当前queue的size，再用一个循环处理size数量的queue，循环过程中当然可能会继续往队列里放入元素，那些元素就不在本层的处理逻辑里了。外层循环里可以用一个变量，比如ans标记当前遍历到哪一层，在当前层的循环完成后，ans++，就进入下一层的BFS循环，直到所有元素被遍历完成。这是常见的BFS追溯层数的套路。
 
@@ -1532,4 +1532,689 @@ This gives us total space complexity as$ \mathcal{O}(N \cdot N)$ + $\mathcal{O}(
 37. Sudoku Solver (Hard)
 
 [Leetcode](https://leetcode.com/problems/sudoku-solver/description/) / [力扣](https://leetcode-cn.com/problems/sudoku-solver/description/)
+
+### 51 N 皇后
+
+51. N-Queens (Hard)
+
+[Leetcode](https://leetcode.com/problems/n-queens/description/) / [力扣](https://leetcode-cn.com/problems/n-queens/description/)
+
+在 n*n 的矩阵中摆放 n 个皇后，并且每个皇后不能在同一行，同一列，同一对角线上，求所有的 n 皇后的解。
+
+一行一行地摆放，在确定一行中的那个皇后应该摆在哪一列时，需要用三个标记数组来确定某一列是否合法，这三个标记数组分别为：列标记数组、45 度对角线标记数组和 135 度对角线标记数组。
+
+45 度对角线标记数组的长度为 2 * n - 1，通过下图可以明确 (r, c) 的位置所在的数组下标为 r + c。
+
+![image-20211103160005947](LeetCode.assets/image-20211103160005947.png)
+
+135 度对角线标记数组的长度也是 2 * n - 1，(r, c) 的位置所在的数组下标为 n - 1 - (r - c)。
+
+![image-20211103160157353](LeetCode.assets/image-20211103160157353.png)
+
+# 动态规划
+
+递归和动态规划都是将原问题拆成多个子问题然后求解，他们之间最本质的区别是，动态规划保存了子问题的解，避免重复计算。
+
+## 斐波那契数列
+
+### 70  爬楼梯
+
+70. Climbing Stairs (Easy)
+
+[Leetcode](https://leetcode.com/problems/climbing-stairs/description/) / [力扣](https://leetcode-cn.com/problems/climbing-stairs/description/)
+
+定义一个数组 dp 存储上楼梯的方法数（为了方便讨论，数组下标从 1 开始），dp[i] 表示走到第 i 个楼梯的方法数目。
+
+第 i 个楼梯可以从第 i-1 和 i-2 个楼梯再走一步到达，走到第 i 个楼梯的方法数为走到第 i-1 和第 i-2 个楼梯的方法数之和。
+$$
+dp[i] = dp[i - 1]+dp[i-2]
+$$
+考虑到 dp[i] 只与 dp[i - 1] 和 dp[i - 2] 有关，因此可以只用两个变量来存储 dp[i - 1] 和 dp[i - 2]，使得原来的 O(N) 空间复杂度优化为 O(1) 复杂度。
+
+### 198 强盗抢劫
+
+198. House Robber (Easy)
+
+[Leetcode](https://leetcode.com/problems/house-robber/description/) / [力扣](https://leetcode-cn.com/problems/house-robber/description/)
+
+定义 dp 数组用来存储最大的抢劫量，其中 dp[i] 表示抢到第 i 个住户时的最大抢劫量。
+
+由于不能抢劫邻近住户，如果抢劫了第 i -1 个住户，那么就不能再抢劫第 i 个住户，所以
+$$
+dp[i] = max(dp[i-2]+nums[i], dp[i-1])
+$$
+
+### 213 强盗在环形街区抢劫
+
+213. House Robber II (Medium)
+
+#### Solution 1：动态规划
+
+首先考虑最简单的情况。如果只有一间房屋，则偷窃该房屋，可以偷窃到最高总金额。如果只有两间房屋，则由于两间房屋相邻，不能同时偷窃，只能偷窃其中的一间房屋，因此选择其中金额较高的房屋进行偷窃，可以偷窃到最高总金额。
+
+注意到当房屋数量不超过两间时，最多只能偷窃一间房屋，因此不需要考虑首尾相连的问题。如果房屋数量大于两间，就必须考虑首尾相连的问题，第一间房屋和最后一间房屋不能同时偷窃。如何才能保证第一间房屋和最后一间房屋不同时偷窃呢?如果偷窃了第一间房屋，则不能偷窃最后一间房屋，因此偷窃房屋的范围是第一间房屋到最后第二间房屋;如果偷窃了最后一间房屋，则不能偷窃第一间房屋，因此偷窃房屋的范围是第二间房屋到最后一间房屋。
+
+假设数组nums的长度为n。如果不偷窃最后一间房屋，则偷窃房屋的下标范围是[0, n - 2];如果不偷窃第一间房屋，则偷窃房屋的下标范围是[1,n-1]。在确定偷窃房屋的下标范围之后，即可用第198题的方法解决。对于两段下标范围分别计算可以偷窃到的最高总金额，其中的最大值即为在n间房屋中可以偷窃到的最高总金额。
+假设偷窃房屋的下标范围是[start, end]，用dp[i]表示在下标范围[start,i]内可以偷窃到的最高总金额，那么就有如下的状态转移方程:
+dp[i]=max( dp[i-2] +nums[i], dp[i-1])
+
+### 4 信件错排[非LeetCode]
+
+题目描述：有 N 个 信 和 信封，它们被打乱，求错误装信方式的数量。
+
+定义一个数组 dp 存储错误方式数量，dp[i] 表示前 i 个信和信封的错误方式数量。假设第 i 个信装到第 j 个信封里面，而第 j 个信装到第 k 个信封里面。根据 i 和 k 是否相等，有两种情况：
+
+- i==k，交换 i 和 j 的信后，它们的信和信封在正确的位置，但是其余 i-2 封信有 dp[i-2] 种错误装信的方式。由于 j 有 i-1 种取值，因此共有 (i-1)*dp[i-2] 种错误装信方式。
+- i != k，交换 i 和 j 的信后，第 i 个信和信封在正确的位置【这里应该是第j个信封在正确的位置吧】，其余 i-1 封信有 dp[i-1] 种错误装信方式。由于 j 有 i-1 种取值，因此共有 (i-1)*dp[i-1] 种错误装信方式。
+
+综上所述，错误装信数量方式数量为：
+$$
+dp[i]=(i-1)*dp[i-2]+(i-1)*dp[i-1]
+$$
+
+### 5. 母牛生产
+
+[程序员代码面试指南-P181](https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode 题解 - 动态规划.md#)
+
+题目描述：假设农场中成熟的母牛每年都会生 1 头小母牛，并且永远不会死。第一年有 1 只小母牛，从第二年开始，母牛开始生小母牛。每只小母牛 3 年之后成熟又可以生小母牛。给定整数 N，求 N 年后牛的数量。
+
+第 i 年成熟的牛的数量为：
+$$
+dp[i] = dp[i-1] + dp[i-3]
+$$
+第i年未成熟的牛的数量[成熟的牛会继续生]
+$$
+dp'[i] = dp[i]+dp[i-1] + dp[i-2]
+$$
+合起来就是第i年牛的总量
+$$
+dp''[i] = 3dp[i-1]+dp[i-2]+2dp[i-3]
+$$
+
+## 矩阵路径
+
+### 64 矩阵的最小路径和
+
+64. Minimum Path Sum (Medium)
+
+[Leetcode](https://leetcode.com/problems/minimum-path-sum/description/) / [力扣](https://leetcode-cn.com/problems/minimum-path-sum/description/)
+
+不能用BFS，因为BFS只能用在无权的图！
+
+#### Solution 1：recursion
+
+来自LeetCode discuss
+
+So basically let's begin with recursion because it is easier to understand and code. When we think about this problem, we could use a top down approach. To get a path, we need to travel from grid[0][0] to grid\[row - 1][col - 1]. So let's set grid[0][0] as the basic case. This is when we jump out of recursion. On the other hand, grid\[row - 1][col - 1] would be the starting point. We write a helper function to do the recursion work. At the starting point, this function returns (value of the end cell + value of the cell that has the less one). But we need to consider that things could happen that we reached the first row or column and we gotta make sure that we stay within the array index limit.
+At last, when we reach grid\[0][0], we are done!
+
+Both grid\[0][0] or grid\[row-1][col-1] can be taken as starting point in this question while implementing DP as Top Down approach.
+But state variable(i.e, dp\[i][j]) in 2-D DP array represent different things in both cases,
+case 1: If grid\[0][0] taken as starting point , dp\[i][j] => represents minimum path sum from cell (0,0) to cell (i,j) in grid.
+case 2: If grid\[m-1][n-1] taken as starting point , dp\[i][j] => represents minimum path sum from cell (i,j) to cell (m-1,n-1) in grid.
+Hope this clarify things a bit. :)
+
+#### Solution 2: dynamic programming
+
+Now, let's upgrade this algorithm from recursion to DP since we don't wanna get stackoverflow for large inputs. In fact, there is nothing fancy about DP. It is simply that we store or cache the results of every single calculation so that we don't need to calculate the same thing again and again. The whole idea is almost the same. We just involve an array to store the values. Now let's see the code:
+
+### 62 矩阵的总路径数
+
+62. Unique Paths (Medium)
+
+[Leetcode](https://leetcode.com/problems/unique-paths/description/) / [力扣](https://leetcode-cn.com/problems/unique-paths/description/)
+
+#### Solution 1：dynamic programming
+
+定义dp\[ i ][ j ]表示到（i, j)有多少种路径
+
+如果i = 0, 则dp\[0][j] = 1
+
+如果j = 0, 则dp\[i][0] = 1
+
+否则，$dp[i][j] = dp[i][j-1]+dp[i-1][j]$ 
+
+Runtime 1 ms, Time complexity m x n, Space complexity: m x n
+
+Bottom-up方法
+
+#### Solution 2：recursive
+
+这种方法当数字大的时候会报错
+
+The time complexity would be the number of nodes in the recursion tree. In this case, there are 2 ^ (m+n) ways to reach (m,n) from (0,0). Hence time complexity = 2 ^ (m+n)
+
+#### Solution 3：Memoization
+
+ (Runtime 0 ms, Time complexity m x n, Space complexity: m x n):
+
+Top-Down
+
+这个看ipad上面画图再结合main里的debug理解
+
+#### Solution 4：数学公式
+
+也可以直接用数学公式求解，这是一个组合问题。机器人总共移动的次数 S=m+n-2，向下移动的次数 D=m-1，那么问题可以看成从 S 中取出 D 个位置的组合数量，这个问题的解为 C(S, D)。
+
+排列组合公式
+$$
+C_{n}^{m}=\frac{A_{n}^{m}}{m !}=\frac{n !}{m !(n-m) !} ; C(n, m)=C(n, n-m), \text { 其中 } n \geqslant m
+$$
+
+## 数组区间
+
+### 303 数组区间和
+
+303. Range Sum Query - Immutable (Easy)
+
+[Leetcode](https://leetcode.com/problems/range-sum-query-immutable/description/) / [力扣](https://leetcode-cn.com/problems/range-sum-query-immutable/description/)
+
+用sum\[i]表示从nums[0]加到nums\[i-1]。则
+
+```java
+public int sumRange(int i, int j) {
+    return sums[j + 1] - sums[i];
+}
+```
+
+### 413 数组中等差递增子区间的个数
+
+413. Arithmetic Slices (Medium)
+
+[Leetcode](https://leetcode.com/problems/arithmetic-slices/description/) / [力扣](https://leetcode-cn.com/problems/arithmetic-slices/description/)
+
+```
+A = [0, 1, 2, 3, 4]
+
+return: 6, for 3 arithmetic slices in A:
+
+[0, 1, 2],
+[1, 2, 3],
+[0, 1, 2, 3],
+[0, 1, 2, 3, 4],
+[ 1, 2, 3, 4],
+[2, 3, 4]
+```
+
+毫无思路，直接看解析了
+
+#### Solution 1：dp
+
+dp[i] 表示以 A[i] 为结尾的等差递增子区间的个数。
+
+当 A[i] - A[i-1] == A[i-1] - A[i-2]，那么 [A[i-2], A[i-1], A[i]] 构成一个等差递增子区间。而且在以 A[i-1] 为结尾的递增子区间的后面再加上一个 A[i]，一样可以构成新的递增子区间。
+
+```
+dp[2] = 1
+    [0, 1, 2]
+dp[3] = dp[2] + 1 = 2
+    [0, 1, 2, 3], // [0, 1, 2] 之后加一个 3
+    [1, 2, 3]     // 新的递增子区间
+dp[4] = dp[3] + 1 = 3
+    [0, 1, 2, 3, 4], // [0, 1, 2, 3] 之后加一个 4
+    [1, 2, 3, 4],    // [1, 2, 3] 之后加一个 4
+    [2, 3, 4]        // 新的递增子区间
+```
+
+综上，在 A[i] - A[i-1] == A[i-1] - A[i-2] 时，dp[i] = dp[i-1] + 1。
+
+因为递增子区间不一定以最后一个元素为结尾，可以是任意一个元素结尾，因此需要返回 dp 数组累加的结果。
+
+time O(n), space O(n)
+
+#### Solution 2：dp
+
+Assume `A[i:j]` (both include `A[i]` and `A[j]`) is an arithmetic slice, then we have:
+
+1. if `A[i]-A[i-1] = = A[i+1]-A[i]`, then `A[i-1:j]` is an arithmetic slice;
+2. if `A[j+1]-A[j] = = A[j]-A[j-1]`, then `A[i:j+1]` is an arithmetic slice.
+
+use `dp[i][j]` to memorize whether `A[i:j]` is an arithmetic slice, and `count` to count the num of arithmetic slices:
+
+ time O(n^2), space: O(n^2)
+
+## 分割整数
+
+### 343 分割整数的最大乘积
+
+343. Integer Break (Medim)
+
+[Leetcode](https://leetcode.com/problems/integer-break/description/) / [力扣](https://leetcode-cn.com/problems/integer-break/description/)
+
+#### Solution 1：动态规划
+
+[leetcode-cn](https://leetcode-cn.com/problems/integer-break/solution/zheng-shu-chai-fen-by-leetcode-solution/)
+
+对于的正整数n，当n≥2时，可以拆分成至少两个正整数的和。令k是拆分出的第一个正整数，则剩下的部分是n - k，n-k可以不继续拆分，或者继续拆分成至少两个正整数的和。由于每个正整数对应的最大乘积取决于比它小的正整数对应的最大乘积，因此可以使用动态规划求解。
+创建数组dp，其中 dp[i]表示将正整数a拆分成至少两个正整数的和之后，这些正整数的最大乘积。特别地，0不是正整数，1是最小的正整数，0和1都不能拆分，因此 dp[0] = dp[1]=0。
+当i≥2时，假设对正整数i拆分出的第一个正整数是j (1≤j<i)，则有以下两种方案:·将i拆分成j和i-j的和，且i-j不再拆分成多个正整数，此时的乘积是j×(i一j);。将i拆分成j和i-j的和，且i-j继续拆分成多个正整数，此时的乘积是j x dp[i-j]。
+因此，当j固定时，有dp[i]= max(j×(i一j), j x dp[i-j])。由于j的取值范围是1到i-1，需要遍历所有的j得到dp[i]的最大值，因此可以得到状态转移方程如下:
+$$
+d p[i]=\max _{1 \leq j<i}\{\max (j \times(i-j), j \times d p[i-j])\}
+$$
+最终得到dp[n]的值即为将正整数n拆分成至少两个正整数的和之后，这些正整数的最大乘积。
+
+**复杂度分析**
+
+- 时间复杂度:$o(n^2)$，其中n是给定的正整数。对于从2到n的每一个整数都要计算对应的dp值，计算一个整数对应的dp值需要O(n)的时间复杂度，因此总时间复杂度是$O(n^2)$。
+- 空间复杂度:O(n)，其中n是给定的正整数。创建一个数组dp，其长度为n＋1。
+
+#### Solution 2：优化的动态规划
+
+Solution 1中的状态转移方程包含2项，当j固定时，dp[i]的值由j×(i一j)和jx dp[i-j]中的较大值决定，因此需要对两项分别考虑。
+
+首先考虑j x dp[i-j]这一项。
+注意到dp的定义，dp[i]表示将正整数i拆分成至少两个正整数的和之后，这些正整数的最大乘积，因此对于任意$1 \leq j <i$,有$dp[i]≥j*dp[i - j]$。
+
+当 $j$ 是奇数时，有 $j=\frac{j-1}{2}+\frac{j+1}{2}$ ，因此 $d p[i] \geq \frac{j-1}{2} \times d p[i-$ $\left.\frac{j-1}{2}\right] \geq \frac{j-1}{2} \times \frac{j+1}{2} \times d p[i-j]$
+
+当 $j$ 是偶数时，有 $j=\frac{j}{2}+\frac{j}{2}$ ， 因此 $d p[i] \geq \frac{j}{2} \times d p\left[i-\frac{j}{2}\right] \geq \frac{j}{2} \times$ $\frac{j}{2} \times d p[i-j]$ 。
+
+如果 $j \geq 4$ 且 $j$ 是奇数，则 $\frac{j-1}{2} \times \frac{j+1}{2}>j$ 恒成立。如果 $j \geq 4$ 且 $j$ 是偶数，则 $\frac{j}{2} \times \frac{j}{2} \geq j$ 恒成立，当且仅当 $j=4$ 时等号成 立。
+由此可知，如果 $j \geq 4$ ，则 $d p[j] \geq j$ ，当且仅当 $j=4$ 时等号成 立，即当 $j \geq 4$ 时一定能将 $j$ 拆成至少两个正整数的和，这些正 整数的乘积大于或等于 $j$ 。
+同时也可以得到，如果 $j \geq 4$ ，则 $d p[i] \geq j \times d p[i-j]$ ，只有当 $j=4$ 时等号可能成立。又由于
+$d p[i]>2 \times d p[i-2]>2 \times(2 \times d p[i-4])=4 \times d p[i-4]$
+
+中间省略一万字……
+
+最终得到的结果是：
+
+又由于在使用j×dp[i-j]计算dp[i]时，j=2和j=3的情况一定优于j≥4的情况，因此无论是考虑j x dp[i-j]还是考虑j× (i-j)，都只需要考虑j=2和j=3的情况。
+由此可以对方法一的动态规划进行优化。
+边界情况是n=2，此时唯一的拆分方案是2=1＋1，最大乘积是1×1 = 1。
+当i≥3时，状态转移方程如下:
+$$
+d p[i]=\max (2 \times(i-2), 2 \times d p[i-2], 3 \times(i-3), 3 \times d p[i-3])
+$$
+
+
+时间复杂度：O(n)，其中 n 是给定的正整数。和方法一相比，计算每个整数对应的 $\textit{dp}$ 的值的时间复杂度降到 O(1)，因此总时间复杂度降到 O(n)。
+
+空间复杂度：O(n)，其中 n 是给定的正整数。创建一个数组 $\textit{dp}$，其长度为 n+1。
+
+#### Solution 3：数学
+
+【也是来自LeetCode-cn解析，跟剑指offer一题很像】
+时间复杂度:O(1)。涉及到的操作包括计算商和余数，以及幂次运算，时间复杂度都是常数。
+
+空间复杂度:o(1)。只需要使用常数复杂度的额外空间。
+
+### 279  按平方数来分割整数
+
+279. Perfect Squares(Medium)
+
+[Leetcode](https://leetcode.com/problems/perfect-squares/description/) / [力扣](https://leetcode-cn.com/problems/perfect-squares/description/)
+
+之前已经写过，对应`搜索`的部分。
+
+youtube讲解一直提到说这个跟`coin change`问题很相似
+
+[youtube解析](https://www.youtube.com/watch?v=HLZLwjzIVGo)【这里面还提到了如何分析时间复杂度，虽然用Python，但是思路讲解很清楚】
+
+还要结合前面的BFS一起看！
+
+### 91 分割整数构成字母字符串
+
+91. Decode Ways (Medium)
+
+[Leetcode](https://leetcode.com/problems/decode-ways/description/) / [力扣](https://leetcode-cn.com/problems/decode-ways/description/)
+
+总觉得这题之前写过？可能在剑指offer？
+
+**复杂度分析**
+
+时间复杂度：O(n)，其中 n 是字符串 s 的长度。
+
+空间复杂度：O(n) 或 O(1)。如果使用数组进行状态转移，空间复杂度为 O(n)；如果仅使用三个变量，空间复杂度为 O(1)
+
+## 最长递增子序列
+
+已知一个序列 {S1, S2,...,Sn}，取出若干数组成新的序列 {Si1, Si2,..., Sim}，其中 i1、i2 ... im 保持递增，即新序列中各个数仍然保持原数列中的先后顺序，称新序列为原序列的一个 **子序列** 。
+
+如果在子序列中，当下标 ix > iy 时，Six > Siy，称子序列为原序列的一个 **递增子序列** 。
+
+定义一个数组 dp 存储最长递增子序列的长度，dp[n] 表示以 Sn 结尾的序列的最长递增子序列长度。对于一个递增子序列 {$S_{i1}, S_{i2},...,S_{im}$}，如果 im < n 并且 Sim < Sn，此时 {Si1, Si2,..., Sim, Sn} 为一个递增子序列，递增子序列的长度增加 1。满足上述条件的递增子序列中，长度最长的那个递增子序列就是要找的，在长度最长的递增子序列上加上 Sn 就构成了以 Sn 为结尾的最长递增子序列。因此 dp[n] = max{ dp[i]+1 | Si < Sn && i < n} 。
+
+因为在求 dp[n] 时可能无法找到一个满足条件的递增子序列，此时 {Sn} 就构成了递增子序列，需要对前面的求解方程做修改，令 dp[n] 最小为 1，即：
+$$
+d p[n]=\max \left\{1, d p[i]+1 \mid S_{i}<S_{n} \& \& i<n\right\}
+$$
+对于一个长度为 N 的序列，最长递增子序列并不一定会以 SN 为结尾，因此 dp[N] 不是序列的最长递增子序列的长度，需要遍历 dp 数组找出最大值才是所要的结果，max{ dp[i] | 1 <= i <= N} 即为所求。
+
+### 300 最长递增子序列
+
+300. Longest Increasing Subsequence (Medium)
+
+[Leetcode](https://leetcode.com/problems/longest-increasing-subsequence/description/) / [力扣](https://leetcode-cn.com/problems/longest-increasing-subsequence/description/)
+
+#### Solution 1
+
+根据上面对`最长递增子序列`的介绍写出的代码
+
+```java
+//一种讨巧的做法
+Arrays.stream(dp).max().orElse(0)
+```
+
+使用 Stream 求最大值会导致运行时间过长，可以改成以下形式：
+
+```java
+int ret = 0;
+for (int i = 0; i < n; i++) {
+    ret = Math.max(ret, dp[i]);
+}
+return ret;
+```
+
+#### Solution 2：二分查找优化
+
+以上解法的时间复杂度为 O(N2)，可以使用二分查找将时间复杂度降低为 O(NlogN)。
+
+定义一个 tails 数组，其中 tails[i] 存储长度为 i + 1 的最长递增子序列的最后一个元素。对于一个元素 x，
+
+- 如果它大于 tails 数组所有的值，那么把它添加到 tails 后面，表示最长递增子序列长度加 1；
+- 如果 tails[i-1] < x <= tails[i]，那么更新 tails[i] = x。
+
+例如对于数组 [4,3,6,5]，有：
+
+```
+tails      len      num
+[]         0        4
+[4]        1        3
+[3]        1        6
+[3,6]      2        5
+[3,5]      2        null
+```
+
+这个要用idea进行调试慢慢看才懂
+
+### 646 一组整数对能够构成的最长链
+
+646. Maximum Length of Pair Chain (Medium)
+
+[Leetcode](https://leetcode.com/problems/maximum-length-of-pair-chain/description/) / [力扣](https://leetcode-cn.com/problems/maximum-length-of-pair-chain/description/)
+
+#### Solution 1：dynamic programming
+
+**Complexity Analysis**
+
+- Time Complexity: $O(N^2)$ where $N$ is the length of `pairs`. There are two for loops, and $N^2$ dominates the sorting step.
+- Space Complexity: $O(N)$ for sorting and to store `dp`.
+
+```java
+ return Arrays.stream(dp).max().orElse(0);
+```
+
+#### Solution 2：Greedy
+
+**Intuition**
+
+We can greedily add to our chain. Choosing the next addition to be the one with the lowest second coordinate is at least better than a choice with a larger second coordinate.
+
+【选a[1]尽可能小的更容易增长链】
+
+**Algorithm**
+
+Consider the pairs in increasing order of their *second* coordinate. We'll try to add them to our chain. If we can, by the above argument we know that it is correct to do so.
+
+**Complexity Analysis**
+
+- Time Complexity: $O(N \log N)$ where $N$ is the length of `S`. The complexity comes from the sorting step, but the rest of the solution does linear work.
+- Space Complexity: $O(N)$ The additional space complexity of storing `cur` and `ans`, but sorting uses $O(N)$ space. Depending on the implementation of the language used, sorting can sometimes use less space.
+
+### 376 最长摆动子序列
+
+376. Wiggle Subsequence (Medium)
+
+[Leetcode](https://leetcode.com/problems/wiggle-subsequence/description/) / [力扣](https://leetcode-cn.com/problems/wiggle-subsequence/description/)
+
+【我自己搞了半天没弄出来……】
+
+#### Solution 1：Brute Force
+
+用一个递归函数`calculate(nums,index,isUp)`， `isUp`是告诉我们需要找一个递增的还是递减的。如果函数返回是一个递增的，下一次我们就要找一个递减的，如果返回递减的，下一次我们要找一个递增的。
+
+**Complexity Analysis**
+
+- Time complexity :$ O(n!)$. $\text{calculate}()$ will be called maximum $n!$ times.
+- Space complexity : $O(n)$. Recursion of depth $n$ is used.
+
+#### Solution 2：dynamic programming
+
+用2个dp数组分别叫`up`和`down`
+
+$up[i]$ refers to the length of the longest wiggle subsequence obtained so far considering $i^{th}$element as the last element of the wiggle subsequence and ending with a rising wiggle.
+
+Similarly, $down[i]$ refers to the length of the longest wiggle subsequence obtained so far considering $i^{th}$ element as the last element of the wiggle subsequence and ending with a falling wiggle.
+
+$up[i]$ will be updated every time we find a rising wiggle ending with the $i^{th}$ element. Now, to find $up[i]$, we need to consider the maximum out of all the previous wiggle subsequences ending with a falling wiggle i.e. $down[j]$, for every $j<i$ and $nums[i]>nums[j]$. Similarly, $down[i]$ will be updated.
+
+**Complexity Analysis**
+
+- Time complexity : $O(n^2)$. Loop inside a loop.
+- Space complexity : $O(n)$. Two arrays of the same length are used for dp.
+
+#### Solution 3：linear dynamic programming
+
+Any element in the array could correspond to only one of the three possible states:
+
+1. up position, it means nums[i] > nums[i-1]
+2. down position, it means nums[i] < nums
+3. equals to position, nums[i] == nums[i-1]
+
+The updates are done as:
+
+If nums[i] > nums[i-1], that means it wiggles up. The element before it must be a down position. So$ up[i] = down[i-1] + 1$, $down[i]$ remains the same as $down[i-1]$. 
+
+If $nums[i] < nums[i-1]$, that means it wiggles down. The element before it must be a up position. So $ down[i] = up[i-1] + 1$, $up[i]$ remains the same as $up[i-1]$ 
+
+If $nums[i] == nums[i-1]$, that means it will not change anything becaue it didn't wiggle at all. So both $down[i]$ and $up[i]$ remain the same as $down[i-1]$ and $up[i-1]$
+
+At the end, we can find the larger out of $up[length-1$ and $down[length-1]$ to find the max. wiggle subsequence length, where $length$ refers to the number of elements in the given array.
+
+**Complexity Analysis**
+
+- Time complexity : O(n) Only one pass over the array length.
+- Space complexity : O(n). Two arrays of the same length are used for dp.
+
+#### Solution 4：Space-Optimized Dynamic Programming
+
+结合`solution 3`，我们不需要两个up、down数组，我们只需要存储`up[i-1]`和`down[i-1]`即可
+
+## 最长公共子序列
+
+对于两个子序列 S1 和 S2，找出它们最长的公共子序列。
+
+定义一个二维数组 dp 用来存储最长公共子序列的长度，其中 $dp[i][j] $表示 S1 的前 i 个字符与 S2 的前 j 个字符最长公共子序列的长度。考虑 S1i 与 S2j 值是否相等，分为两种情况：
+
+- 当 S1i==S2j 时，那么就能在 S1 的前 i-1 个字符与 S2 的前 j-1 个字符最长公共子序列的基础上再加上 S1i 这个值，最长公共子序列长度加 1，即$ dp[i][j] = dp[i-1][j-1] + 1$。
+- 当 S1i != S2j 时，此时最长公共子序列为 S1 的前 i-1 个字符和 S2 的前 j 个字符最长公共子序列，或者 S1 的前 i 个字符和 S2 的前 j-1 个字符最长公共子序列，取它们的最大者，即 $dp[i][j] = max\{ dp[i-1][j], dp[i][j-1] \}$。
+
+综上，最长公共子序列的状态转移方程为：
+$$
+d p[i][j]=\left\{\begin{array}{rr}
+d p[i-1][j-1]+1 & S 1_{i}==S 2_{j} \\
+\max (d p[i-1][j], d p[i][j-1]) & S 1_{i}<>S 2_{j}
+\end{array}\right.
+$$
+对于长度为 N 的序列 S1 和长度为 M 的序列 S2，$dp[N][M] $就是序列 S1 和序列 S2 的最长公共子序列长度。
+
+与最长递增子序列相比，最长公共子序列有以下不同点：
+
+- 针对的是两个序列，求它们的最长公共子序列。
+- 在最长递增子序列中，$dp[i]$ 表示以 Si 为结尾的最长递增子序列长度，子序列必须包含 Si ；在最长公共子序列中，$dp[i][j]$ 表示 S1 中前 i 个字符与 S2 中前 j 个字符的最长公共子序列长度，不一定包含 $S1i $和 $S2j$。
+- 在求最终解时，最长公共子序列中 $dp[N][M]$就是最终解，而最长递增子序列中 $dp[N]$ 不是最终解，因为以 SN 为结尾的最长递增子序列不一定是整个序列最长递增子序列，需要遍历一遍 dp 数组找到最大者。
+
+### 1143 最长公共子序列
+
+1143. Longest Common Subsequence
+
+[Leetcode](https://leetcode.com/problems/longest-common-subsequence/) / [力扣](https://leetcode-cn.com/problems/longest-common-subsequence/)
+
+## 0-1 背包
+
+有一个容量为 N 的背包，要用这个背包装下物品的价值最大，这些物品有两个属性：体积 w 和价值 v。
+
+定义一个二维数组 dp 存储最大价值，其中 $dp[i][j]$ 表示前 i 件物品体积不超过 j 的情况下能达到的最大价值。设第 i 件物品体积为 w，价值为 v，根据第 i 件物品是否添加到背包中，可以分两种情况讨论：
+
+- 第 i 件物品没添加到背包，总体积不超过 j 的前 i 件物品的最大价值就是总体积不超过 j 的前 i-1 件物品的最大价值，$dp[i][j] = dp[i-1][j]$。
+- 第 i 件物品添加到背包中，$dp[i][j] = dp[i-1][j-w] + v$。
+
+第 i 件物品可添加也可以不添加，取决于哪种情况下最大价值更大。因此，0-1 背包的状态转移方程为：
+$$
+dp[i][j] = max(dp[i-1][j], dp[i-1][j-w]+v)
+$$
+
+```java
+// W 为背包总体积
+// N 为物品数量
+// weights 数组存储 N 个物品的重量
+// values 数组存储 N 个物品的价值
+public int knapsack(int W, int N, int[] weights, int[] values) {
+    int[][] dp = new int[N + 1][W + 1];
+    for (int i = 1; i <= N; i++) {
+        int w = weights[i - 1], v = values[i - 1];
+        for (int j = 1; j <= W; j++) {
+            if (j >= w) {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - w] + v);
+            } else {
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
+    }
+    return dp[N][W];
+}
+```
+
+**空间优化**
+
+在程序实现时可以对 0-1 背包做优化。观察状态转移方程可以知道，前 i 件物品的状态仅与前 i-1 件物品的状态有关，因此可以将 dp 定义为一维数组，其中 dp[j] 既可以表示 $dp[i-1][j]$ 也可以表示 $dp[i][j]$。此时，
+$$
+dp[j] = max(dp[j], dp[j-w]+v)
+$$
+因为 dp[j-w] 表示 $dp[i-1][j-w]$，因此不能先求 $dp[i][j-w]$，防止将 $dp[i-1][j-w]$ 覆盖。也就是说要先计算 $dp[i][j]$ 再计算$ dp[i][j-w]$，在程序实现时需要按倒序来循环求解。
+
+```java
+public int knapsack(int W, int N, int[] weights, int[] values) {
+    int[] dp = new int[W + 1];
+    for (int i = 1; i <= N; i++) {
+        int w = weights[i - 1], v = values[i - 1];
+        for (int j = W; j >= 1; j--) {
+            if (j >= w) {
+                dp[j] = Math.max(dp[j], dp[j - w] + v);
+            }
+        }
+    }
+    return dp[W];
+}
+
+```
+
+**无法使用贪心算法的解释**
+
+0-1 背包问题无法使用贪心算法来求解，也就是说不能按照先添加性价比最高的物品来达到最优，这是因为这种方式可能造成背包空间的浪费，从而无法达到最优。考虑下面的物品和一个容量为 5 的背包，如果先添加物品 0 再添加物品 1，那么只能存放的价值为 16，浪费了大小为 2 的空间。最优的方式是存放物品 1 和物品 2，价值为 22.
+
+| id   | w    | v    | v/w  |
+| ---- | ---- | ---- | ---- |
+| 0    | 1    | 6    | 6    |
+| 1    | 2    | 10   | 5    |
+| 2    | 3    | 12   | 4    |
+
+**变种**
+
+- 完全背包：物品数量为无限个
+- 多重背包：物品数量有限制
+- 多维费用背包：物品不仅有重量，还有体积，同时考虑这两种限制
+- 其它：物品之间相互约束或者依赖
+
+### 416 划分数组为和相等的两部分
+
+416. Partition Equal Subset Sum (Medium)
+
+[Leetcode](https://leetcode.com/problems/partition-equal-subset-sum/description/) / [力扣](https://leetcode-cn.com/problems/partition-equal-subset-sum/description/)
+
+#### Solution 1：回溯
+
+这是我想的方法，相当于把整个num加总。如果sum是奇数，则不可能平分，直接返回false。如果是偶数，则用backtracking的方法找是否数组中存在总和=sum/2的部分。
+
+这种会导致TLE
+
+#### Solution 2：0-1背包问题
+
+[leetcode-cn解析](https://leetcode-cn.com/problems/partition-equal-subset-sum/solution/0-1-bei-bao-wen-ti-xiang-jie-zhen-dui-ben-ti-de-yo/)
+
+可以看成一个背包大小为 sum/2 的 0-1 背包问题。
+
+**转换为 「0 - 1」 背包问题**
+这道问题是我学习「背包」问题的入门问题，做这道题需要做一个等价转换：是否可以从输入数组中挑选出一些正整数，使得这些数的和 **等于** 整个数组元素的和的一半。
+
+本题与 0-1 背包问题有一个很大的不同，即：
+
+0-1 背包问题选取的物品的容积总量 **不能超过** 规定的总量；
+本题选取的数字之和需要 **恰好等于** 规定的和的一半。
+这一点区别，决定了在初始化的时候，所有的值应该初始化为 false。 （《背包九讲》的作者在介绍 「0-1 背包」问题的时候，有强调过这点区别。）
+
+**0-1背包问题的思路**
+
+作为「0-1 背包问题」，它的特点是：「每个数只能用一次」。解决的基本思路是：**物品一个一个选，容量也一点一点增加去考虑**，这一点是「动态规划」的思想，特别重要。
+在实际生活中，我们也是这样做的，一个一个地尝试把候选物品放入「背包」，通过比较得出一个物品要不要拿走。
+
+具体做法是：画一个 `len` 行，`target + 1` 列的表格。这里 `len` 是物品的个数，`target` 是背包的容量。`len` 行表示一个一个物品考虑，`target + 1`多出来的那 1 列，表示背包容量从 0 开始考虑。很多时候，我们需要考虑这个容量为 0 的数值
+
+**状态与状态转移方程**
+状态定义：$dp[i][j]$表示从数组的 [0, i] 这个子区间内挑选一些正整数，每个数只能用一次，使得这些数的和恰好等于 j。
+状态转移方程：很多时候，状态转移方程思考的角度是「分类讨论」，对于「0-1 背包问题」而言就是「当前考虑到的数字选与不选」。
+
+- 不选择 nums[i]，如果在 [0, i - 1] 这个子区间内已经有一部分元素，使得它们的和为 j ，那么 $dp[i][j] $= true；
+- 选择 nums[i]，如果在 [0, i - 1] 这个子区间内就得找到一部分元素，使得它们的和为 $j - nums[i]$。
+
+状态转移方程：
+$$
+dp[i][j]=dp[i-1][j] or dp[i-1][j-nums[i]]
+$$
+一般写出状态转移方程以后，就需要考虑初始化条件。
+
+j - nums[i] 作为数组的下标，一定得保证大于等于 0 ，因此 nums[i] <= j；
+注意到一种非常特殊的情况：j 恰好等于 nums[i]，即单独 nums[j] 这个数恰好等于此时「背包的容积」 j，这也是符合题意的。
+
+完整的状态转移方程：
+$$
+\operatorname{dp}[i][j]= \begin{cases}\operatorname{dp}[i-1][j], & \text { 至少是这个答案，如果 } \operatorname{dp}[i-1][j] \text { 为真，直接计算下一个状态 } \\ \operatorname{true}, & \operatorname{nums}[\mathrm{i}]=\mathrm{j} \\ \operatorname{dp}[i-1][j-n u m s[i] . & \operatorname{nums}[\mathrm{i}]<\mathrm{j}\end{cases}
+$$
+说明：虽然写成花括号，但是它们的关系是 或者。
+- 初始化: $d p[0][0]=$ false，因为候选数 nums[0] 是正整数，凑不出和为 0 ;
+- 输出:$ dp[len - 1][target]$，这里 len 表示数组的长度，target 是数组的元素之和（必须是偶数）的 一半。
+
+**说明**
+
+事实上 $dp[0][0] = true$ 也是可以的，相应地状态转移方程有所变化，请见下文；
+如果觉得这个初始化非常难理解，解释性差的朋友，我个人觉得可以不用具体解释它的意义，初始化的值保证状态转移能够正确完成即可。
+
+**复杂度分析**
+
+- 时间复杂度:O(NC):这里N是数组元素的个数，C是数组元素的和的一半。
+- 空间复杂度:O(NC)。
+
+解释设置 $dp[0][0] = true$ 的合理性（重点）
+修改状态数组初始化的定义：$dp[0][0] = true$。考虑容量为 0 的时候，即 $dp[i][0]$。按照本意来说，应该设置为 false ，但是注意到状态转移方程（代码中）：
+
+$dp[i][j] = dp[i - 1][j] || dp[i - 1][j - nums[i]];$
+当 j - nums[i] == 0 成立的时候，根据上面分析，就说明单独的 nums[i] 这个数就恰好能够在被分割为单独的一组，其余的数分割成为另外一组。因此，我们把初始化的 $dp[i][0]$ 设置成为 true 是没有问题的。
+
+注意：观察状态转移方程，or 的结果只要为真，表格 这一列 下面所有的值都为真。因此在填表的时候，只要表格的最后一列是 true，代码就可以结束，直接返回 true。
+
+#### Solution 3：空间优化
+
+「从后向前」 写的过程中，一旦 nums[i] <= j 不满足，可以马上退出当前循环，因为后面的 j 的值肯定越来越小，没有必要继续做判断，直接进入外层循环的下一层。相当于也是一个剪枝，这一点是「从前向后」填表所不具备的。
+
+**复杂度分析**
+
+- 时间复杂度:O(NC):这里N是数组元素的个数，C是数组元素的和的一半。
+- 空间复杂度:O(C)。减少了物品那个维度，无论来多少个数，用一行表示状态就够了
+
+### 494 改变一组数的正负号使得它们的和为一给定数
+
+494. Target Sum (Medium)
+
+[Leetcode](https://leetcode.com/problems/target-sum/description/) / [力扣](https://leetcode-cn.com/problems/target-sum/description/)
 
