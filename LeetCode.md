@@ -2051,6 +2051,50 @@ $$
 
 [Leetcode](https://leetcode.com/problems/longest-common-subsequence/) / [力扣](https://leetcode-cn.com/problems/longest-common-subsequence/)
 
+## 背包问题
+
+[背包九讲][file:///F:/github_data/Coding/背包九讲.pdf]
+
+[代码练习][https://www.acwing.com/problem/]
+
+[看见一个很好的解析][https://www.cnblogs.com/mfrank/p/10849505.html]
+
+### 0 01背包
+
+```java
+//f[i][j] 表示只看前i个物品，总体积是j的情况下，总价值最大是多少
+//0-1背包问题：每个物品只能选或不选，每个物品只有一个
+//n件物品 体积从0-V f[n][0-v]
+result = max(f[n][0-V])
+/**
+1. 不选第i个物品 f[i][j] = f[i-1][j]
+2. 选第i个物品 f[i][j] = f[i-1][j-v[i]]
+f[i][j] = max(1,2)
+
+初始化
+f[0][0] = 0;
+*/
+   
+```
+
+
+
+### 1 完全背包
+
+### 2 多重背包
+
+### 3 混合背包
+
+### 4 二维费用
+
+### 5 分组背包问题
+
+### 6 背包问题求方案数
+
+### 7 求背包问题的方案
+
+### 8 有依赖的背包问题
+
 ## 0-1 背包
 
 有一个容量为 N 的背包，要用这个背包装下物品的价值最大，这些物品有两个属性：体积 w 和价值 v。
@@ -2217,4 +2261,423 @@ $dp[i][j] = dp[i - 1][j] || dp[i - 1][j - nums[i]];$
 494. Target Sum (Medium)
 
 [Leetcode](https://leetcode.com/problems/target-sum/description/) / [力扣](https://leetcode-cn.com/problems/target-sum/description/)
+
+#### Solution 1：转化为Subset Sum问题
+
+该问题可以转换为 Subset Sum 问题，从而使用 0-1 背包的方法来求解。
+
+可以将这组数看成两部分，P 和 N，其中 P 使用正号，N 使用负号，有以下推导：
+
+```
+                  sum(P) - sum(N) = target
+sum(P) + sum(N) + sum(P) - sum(N) = target + sum(P) + sum(N)
+                       2 * sum(P) = target + sum(nums)
+```
+
+记数组的元素和为 $\textit{sum}$，添加 $\texttt{-}$ 号的元素之和为 $\textit{neg}$，则其余添加 $\texttt{+}$ 的元素之和为 $\textit{sum}-\textit{neg}$，得到的表达式的结果为
+
+$(\textit{sum}-\textit{neg})-\textit{neg}=\textit{sum}-2\cdot\textit{neg}=\textit{target}$
+
+即
+
+$\textit{neg}=\dfrac{\textit{sum}-\textit{target}}{2}$
+
+因此只要找到一个子集，令它们都取正号，并且和等于 (target + sum(nums))/2，就证明存在解。
+
+#### Solution 2：Brute Force
+
+运用递归的思想，首先思考什么时候递归结束呢？
+
+那当然是前面各种+-遍历到最后一个元素，然后加起来的和sum== target， 这个时候就可以cnt+1；
+
+然后具体思考每一步递归的原理，当前sum = sum + nums[i]或者sum = sum - nums[i]. 每一步都是这样。
+
+**Complexity Analysis**
+
+- Time complexity: $O(2^n)$. Size of recursion tree will be $2^n$. $n$ refers to the size of nums array.
+- Space complexity: $O(n)$. The depth of the recursion tree can go up to $n$.
+
+#### Solution 3：Recursion with memoization
+
+**Complexity Analysis**
+
+- Time complexity: $O(t \cdot n)$. The `memo` array of size $O(t \cdot n)$ has been filled just once. Here, t*t* refers to the sum of the $nums$ array and n refers to the length of the $nums$ array.
+- Space complexity: $O(t \cdot n)$. The depth of recursion tree can go up to $n$. The `memo` array contains $t \cdot n$elements.
+
+#### Solution 4：2D dynamic programming
+
+**Complexity Analysis**
+
+- Time complexity: $O(t \cdot n)$ The `dp` array of size $O(t \cdot n)$ has been filled just once. Here, t*t* refers to the sum of the $nums$ array and n refers to the length of the $nums$ array.
+- Space complexity: $O(t \cdot n)$. `dp` array of size $t \cdot n$ is used.
+
+#### Solution 5： 1D Dynamic Programming
+
+**Complexity Analysis**
+
+- Time complexity: $O(t \cdot n)$ The `dp` array of size $O(t \cdot n)$ has been filled just once. Here, t*t* refers to the sum of the $nums$ array and n refers to the length of the $nums$ array.
+- Space complexity: $O(t)$. Two `dp` arrays of size $2 \cdot t$ are used, therefore the space usage is $O(t)$
+
+### 474 01字符构成最多的字符串
+
+474. Ones and Zeroes (Medium)
+
+[Leetcode](https://leetcode.com/problems/ones-and-zeroes/description/) / [力扣](https://leetcode-cn.com/problems/ones-and-zeroes/description/)
+
+#### Solution 1：背包问题-动态规划
+
+这是一个多维费用的 0-1 背包问题，有两个背包大小，0 的数量和 1 的数量。
+
+这道题和经典的背包问题非常相似，但是和经典的背包问题只有一种容量不同，这道题有两种容量，即选取的字符串子集中的 0 和 1 的数量上限。
+
+经典的背包问题可以使用二维动态规划求解，两个维度分别是物品和容量。这道题有两种容量，因此需要使用三维动态规划求解，三个维度分别是字符串、00 的容量和 11 的容量。
+
+定义三维数组 $\textit{dp}$，其中 $\textit{dp}[i][j][k]$ 表示在前 ii 个字符串中，使用 j 个 0 和 k 个 1 的情况下最多可以得到的字符串数量。假设数组 $\textit{str}$ 的长度为 l，则最终答案为 $\textit{dp}[l][m][n]$。
+
+当没有任何字符串可以使用时，可以得到的字符串数量只能是 0，因此动态规划的边界条件是：当 i=0 时，对任意 $0 \le j \le m$ 和 $0 \le k \le $，都有 $\textit{dp}[i][j][k]=0$。
+
+状态转移方程：
+
+$dp[i][j][k]=\{ dp[i−1][j][k], \\max(dp[i−1][j][k],dp[i−1][j−zeros][k−ones]+1)\}$
+
+然后可以将内层循环倒序，将3维优化成2维。
+
+复杂度分析
+
+时间复杂度：$O(lmn + L)$，其中 l 是数组 $\textit{strs}$的长度，m 和 n 分别是 0 和 1 的容量，L 是数组 $\textit{strs}$ 中的所有字符串的长度之和。
+动态规划需要计算的状态总数是 $O(lmn)$，每个状态的值需要 $O(1)$ 的时间计算。
+对于数组 $\textit{strs}$ 中的每个字符串，都要遍历字符串得到其中的 0 和 1 的数量，因此需要 $O(L)$ 的时间遍历所有的字符串。
+总时间复杂度是 $O(lmn + L)$。
+
+空间复杂度：$O(mn)$，其中 m 和 n 分别是 0 和 1 的容量。使用空间优化的实现，需要创建 $m+1$ 行 $n+1$ 列的二维数组 $\textit{dp}$。
+
+==和前面的和为定数不同，这里只要求不超过，对比代码研究差异==
+
+对比完感觉就是不超过的时候加多一个判断，只有不超过才`max(dp[i−1][j][k],dp[i−1][j−zeros][k−ones]+1)`
+
+### 322 找零钱的最少硬币数
+
+322. Coin Change (Medium)
+
+[Leetcode](https://leetcode.com/problems/coin-change/description/) / [力扣](https://leetcode-cn.com/problems/coin-change/description/)
+
+#### Solution 1：bfs
+
+link 最短路径 平方和的那题
+
+#### Solution 2：完全背包问题
+
+- 物品：硬币
+- 物品大小：面额
+- 物品价值：数量
+
+因为硬币可以重复使用，因此这是一个完全背包问题。完全背包只需要将 0-1 背包的逆序遍历 dp 数组改为正序遍历即可。
+
+复杂度分析
+
+时间复杂度：O(Sn)，其中 S 是金额，n 是面额数。我们一共需要计算 O(S)个状态，S 为题目所给的总金额。对于每个状态，每次需要枚举 n 个面额来转移状态，所以一共需要 O(Sn)的时间复杂度。
+空间复杂度：O(S)。数组 $\textit{dp}$ 需要开长度为总金额 S 的空间。
+
+#### Solution 3：递归
+
+我们注意到这个问题有一个最优的子结构性质，这是解决动态规划问题的关键。最优解可以从其子问题的最优解构造出来。如何将问题分解成子问题？假设我们知道 F(S)，即组成金额 S 最少的硬币数，最后一枚硬币的面值是 C。那么由于问题的最优子结构，转移方程应为：
+
+$$
+F(S) = F(S-C)+1
+$$
+复杂度分析
+
+时间复杂度：O(Sn)，其中 S 是金额，n 是面额数。我们一共需要计算 S 个状态的答案，且每个状态 F(S)由于上面的记忆化的措施只计算了一次，而计算一个状态的答案需要枚举 n 个面额值，所以一共需要 O(Sn) 的时间复杂度。
+空间复杂度：O(S)，我们需要额外开一个长为 S 的数组来存储计算出来的答案 F(S)。
+
+### 518 找零钱的硬币数组合
+
+518. Coin Change 2 (Medium)
+
+[Leetcode](https://leetcode.com/problems/coin-change-2/description/) / [力扣](https://leetcode-cn.com/problems/coin-change-2/description/)
+
+不懂什么时候要逆序啊啊啊啊啊
+
+#### Solution 1：完全背包
+
+二维分析
+状态表示:$f[i][j]$表示从前i种硬币中选，且总金额恰好为j的所有选法集合的方案数。
+那么$f[n][amount]$就表示表示从前n种硬币中选，且总金额恰好为amount的所有选法集合的方案数，即为答案。
+集合划分:
+按照第i种硬币可以选0个,1个，2个，3个，， ， , k个划分集合$f[i][j]$。其中$k*coin[i]<= j$，也就是说在背包能装下的情况下，枚举第i种硬币可以选择几个。
+
+- 第i种硬币选0个，$f[i]i]=f[i-1$][i]
+- 第i种硬币选1个，$f[i]i]= f[i-1][j - coins[i]]$
+- 第i种硬币选k个，f[i]i]= $f[i-1][j - k*coins[i]]$
+
+状态计算：
+
+$f[i][j] = f[i-1][j]+f[i-1][j-coins[i]]+f[i-1][j-2*coins[i]],,,,,,+f[i-1][j-k*coins[i]] $
+初始化条件：
+
+$f[0][0] = 1$，使用0种硬币，凑0元钱，也是一种方案。
+
+时间复杂度分析： 
+
+$O(amount^2*n)$，其中 amount是总金额，n是数组 coins的长度。
+
+#### Solution 2：一维优化
+
+二维完全背包求解方案时间复杂度较高，考虑一维优化。v代表第i种硬币的面值
+
+$f[i][j] = f[i-1][j] + f[i-1][j-v]+f[i-1][j-2v]+,,,,,+f[i-1][j-kv])$
+
+$f[i][j-v] = f[i-1][j-v]+f[i-1][j-2v]+,,,,,+f[i-1][j-kv])$
+
+因此：
+
+$f[i][j] = f[i-1][j]+f[i][j-v])$
+
+![img](LeetCode.assets/1629860018-PMLsQD-file_1629860018260)
+
+**去掉物品种类维度，状态计算方程为：** `f[j] = f[j] + f[j-v]`
+
+**复杂度分析**
+
+时间复杂度：$O(\textit{amount} \times n$，其中 $\textit{amount}$是总金额，$n$ 是数组 $\textit{coins}$的长度。需要使用数组 $\textit{coins}$中的每个元素遍历并更新数组 $\textit{dp}$ 中的每个元素的值。
+
+空间复杂度：$O(\textit{amount})$，其中 $\textit{amount}$是总金额。需要创建长度为 $\textit{amount}+1$的数组 $\textit{dp}$。
+
+### 139  字符串按单词列表分割
+
+139. Word Break (Medium)
+
+[Leetcode](https://leetcode.com/problems/word-break/description/) / [力扣](https://leetcode-cn.com/problems/word-break/description/)
+
+dict 中的单词没有使用次数的限制，因此这是一个完全背包问题。
+
+该问题涉及到字典中单词的使用顺序，也就是说物品必须按一定顺序放入背包中，例如下面的 dict 就不够组成字符串 "leetcode"：
+
+```
+["lee", "tc", "cod"]
+```
+
+求解顺序的完全背包问题时，对物品的迭代应该放在最里层，对背包的迭代放在外层，只有这样才能让物品按一定顺序放入背包中。
+
+[背包问题总结][https://leetcode-cn.com/problems/word-break/solution/yi-tao-kuang-jia-jie-jue-bei-bao-wen-ti-kchg9/]
+
+这个写的很好，看！！
+
+
+### 377 组合总和
+
+377. Combination Sum IV (Medium)
+
+[Leetcode](https://leetcode.com/problems/combination-sum-iv/description/) / [力扣](https://leetcode-cn.com/problems/combination-sum-iv/description/)
+
+## 股票交易
+
+### 309 需要冷却期的股票交易
+
+309. Best Time to Buy and Sell Stock with Cooldown(Medium)
+
+[Leetcode](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/description/) / [力扣](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/description/)
+
+[leetcode-cn题解][https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/solution/zui-jia-mai-mai-gu-piao-shi-ji-han-leng-dong-qi-4/]
+
+#### Solution 1：动态规划
+
+用dp[i]表示第i天结束之后的最大收益。题目要求：最多同时买入一只股票，卖出股票之后会有冷冻期。所以有以下3种状态：
+
+- $dp[i][0]$，目前持有一只股票，对应的累计最大收益记为`dp[i][0]`
+- `dp[i][1]`，当天持有一只股票，然后卖掉了，相当于第i天结束之后没有股票，然后第i+1天要被冷冻
+- `dp[i][2]`， 当天没有股票，当天也不处于冷冻期，说明第i-1天没有卖股票，也没有股票。
+
+如何进行状态转移呢？在第 i 天时，我们可以在不违反规则的前提下进行「买入」或者「卖出」操作。第i天状态从第i-1天转移过来：
+
+- `dp[i][0]`，目前持有的股票可以是第`i-1`天就持有的，对应状态为`dp[i-1][0]`；也有可能是第i天买入的，那第i-1天就不能持有股票且不处于冷冻期，即第i-1天不能卖股票，此时`dp[i][0] = dp[i-1][2]-prices[i]`
+
+  `dp[i][0]=max{dp[i-1][0], dp[i-1][2]-prices[i]}`
+
+- `dp[i][1]`说明第i-1天必须要有一只股票，对应状态为`dp[i-1][0]`加上收益
+
+  `dp[i][1] = dp[i-1][0]+prices[i]`
+
+- `dp[i][2]`说明第i天没有股票，也没有卖股票。那有可能是因为第i天处于冷冻期，也有可能不处于冷冻期
+
+  `dp[i][2] = max{dp[i-1][1], dp[i-1][2]}`
+
+一共有n天，则最终的答案为
+
+`max{dp[n-1][0], dp[n-1][1], dp[n-1][2]}`
+
+由于是最后一天，手上有股票是没有意义的
+
+`max={dp[n-1][1], dp[n-1][2]}`
+
+【下面这个版本更容易懂】
+
+而持有股票依旧只有一种状态
+
+所以对于每一天i，都有可能是三种状态：
+0.不持股且当天没卖出,定义其最大收益`dp[i][0]`;
+1.持股,定义其最大收益`dp[i][1]`；
+2.不持股且当天卖出了，定义其最大收益`dp[i][2]`；
+
+初始化：
+`dp[0][0]=0;`//本来就不持有，啥也没干
+`dp[0][1]=-1*prices[0]`;//第0天只买入
+`dp[0][2]=0`;//可以理解成第0天买入又卖出，那么第0天就是“不持股且当天卖出了”这个状态了，其收益为0，所以初始化为0是合理的
+
+重头戏：
+
+一、第i天不持股且没卖出的状态dp[i][0]，也就是我没有股票，而且还不是因为我卖了它才没有的，那换句话说是从i-1天到第i天转移时，它压根就没给我股票！所以i-1天一定也是不持有，那就是不持有的两种可能：i-1天不持股且当天没有卖出`dp[i-1][0]`；i-1天不持股但是当天卖出去了`dp[i-1][2]`；
+所以： `dp[i][0]=max(dp[i-1][0],dp[i-1][2])`
+
+二、第i天持股dp[i][1]，今天我持股，来自两种可能：
+1、要么是昨天我就持股，今天继承昨天的，也就是dp[i-1][1]，这种可能很好理解；
+2、要么：是昨天我不持股，今天我买入的，但前提是昨天我一定没卖！因为如果昨天我卖了，那么今天我不能交易！也就是题目中所谓“冷冻期”的含义，只有昨天是“不持股且当天没卖出”这个状态，我今天才能买入！所以是`dp[i-1][0]-p[i]`
+所以： `dp[i][1]=max(dp[i-1][1],dp[i-1][0]-p[i])`
+
+三、i天不持股且当天卖出了，这种就简单了，那就是说昨天我一定是持股的，要不然我今天拿什么卖啊，而持股只有一种状态，昨天持股的收益加上今天卖出得到的新收益，就是dp[i-1][1]+p[i]啦
+所以：dp[i][2]=dp[i-1][1]+p[i]
+
+总结：最后一天的最大收益有两种可能，而且一定是“不持有”状态下的两种可能，把这两种“不持有”比较一下大小，返回即可
+
+### 714 需要交易费用的股票交易
+
+714. Best Time to Buy and Sell Stock with Transaction Fee (Medium)
+
+[Leetcode](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/description/) / [力扣](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/description/)
+
+#### Solution 1：动态规划
+
+定义状态 $\textit{dp}[i][0]$ 表示第 i 天交易完后手里没有股票的最大利润，$\textit{dp}[i][1]$表示第 i 天交易完后手里持有一支股票的最大利润（i 从 0 开始）。
+
+考虑$ \textit{dp}[i][0]$ 的转移方程，如果这一天交易完后手里没有股票，那么可能的转移状态为前一天已经没有股票，即 $\textit{dp}[i-1][0]$，或者前一天结束的时候手里持有一支股票，即 $\textit{dp}[i-1][1]$，这时候我们要将其卖出，并获得 $\textit{prices}[i]$ 的收益，但需要支付$ \textit{fee}$的手续费。因此为了收益最大化，我们列出如下的转移方程：
+
+$$dp[i][0]=max\{dp[i−1][0],dp[i−1][1]+prices[i]−fee\}$$
+
+再来按照同样的方式考虑 $\textit{dp}[i][1]$按状态转移，那么可能的转移状态为前一天已经持有一支股票，即 $\textit{dp}[i-1][1]$，或者前一天结束时还没有股票，即 $\textit{dp}[i-1][0]$，这时候我们要将其买入，并减少 $\textit{prices}[i]$的收益。可以列出如下的转移方程：
+
+$dp[i][1]=max\{dp[i−1][1],dp[i−1][0]−prices[i]\}$
+
+**Complexity Analysis**
+
+- Time Complexity: O(N) where N is the number of prices.
+- Space Complexity: O(1), the space used by `cash` and `hold`.
+
+#### Solution 2：贪心算法
+
+方法一中，我们将手续费放在卖出时进行计算。如果我们换一个角度考虑，将手续费放在买入时进行计算，那么就可以得到一种基于贪心的方法。
+
+我们用 $\textit{buy}$表示在最大化收益的前提下，如果我们手上拥有一支股票，那么它的最低买入价格是多少。在初始时，$\textit{buy}$ 的值为 $\textit{prices}[0]$ 加上手续费 $\textit{fee}$。那么当我们遍历到第 i~(i>0)i (i>0) 天时：
+
+如果当前的股票价格 $\textit{prices}[i]$ 加上手续费$ \textit{fee}$小于 $\textit{buy}$，那么与其使用 $\textit{buy}$ 的价格购买股票，我们不如以 $\textit{prices}[i] + \textit{fee}$ 的价格购买股票，因此我们将 $\textit{buy}$ 更新为 $\textit{prices}[i] + \textit{fee}$；
+
+如果当前的股票价格 $\textit{prices}[i]$ 大于 $\textit{buy}$，那么我们直接卖出股票并且获得 $\textit{prices}[i] - \textit{buy}$的收益。但实际上，我们此时卖出股票可能并不是全局最优的（例如下一天股票价格继续上升），因此我们可以提供一个反悔操作，看成当前手上拥有一支买入价格为 $\textit{prices}[i]$ 的股票，将 $\textit{buy}$ 更新为 $\textit{prices}[i]$。这样一来，如果下一天股票价格继续上升，我们会获得 $\textit{prices}[i+1] - \textit{prices}[i]$的收益，加上这一天 $\textit{prices}[i] - \textit{buy}$ 的收益，恰好就等于在这一天不进行任何操作，而在下一天卖出股票的收益；
+
+对于其余的情况，$\textit{prices}[i]$落在区间 $[\textit{buy}-\textit{fee}, \textit{buy}]$ 内，它的价格没有低到我们放弃手上的股票去选择它，也没有高到我们可以通过卖出获得收益，因此我们不进行任何操作。
+
+上面的贪心思想可以浓缩成一句话，即当我们卖出一支股票时，我们就立即获得了以相同价格并且免除手续费买入一支股票的权利。在遍历完整个数组 $\textit{prices}$之后之后，我们就得到了最大的总收益。
+
+**复杂度分析**
+
+- 时间复杂度：O(n)，其中 n为数组的长度。
+- 空间复杂度：O(1)。
+
+### 123 只能进行两次的股票交易
+
+123. Best Time to Buy and Sell Stock III (Hard)
+
+[Leetcode](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/description/) / [力扣](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iii/description/)
+
+#### Solution 1：双指针
+
+[bilibili解析][https://www.bilibili.com/video/BV1ED4y1Q7AP?from=search&seid=11875747238153867614&spm_id_from=333.337.0.0]
+
+#### Solution 2：动态规划
+
+一天结束时，可能有持股、可能未持股、可能卖出过1次、可能卖出过2次、也可能未卖出过
+
+所以定义状态转移数组`dp[天数][当前是否持股][卖出的次数]`
+
+具体一天结束时的6种状态：
+
+未持股，未卖出过股票：说明从未进行过买卖，利润为0
+`dp[i][0][0]=0`
+未持股，卖出过1次股票：可能是今天卖出，也可能是之前卖的（昨天也未持股且卖出过）
+`dp[i][0][1]=max(dp[i-1][1][0]+prices[i],dp[i-1][0][1])`
+未持股，卖出过2次股票:可能是今天卖出，也可能是之前卖的（昨天也未持股且卖出过）
+`dp[i][0][2]=max(dp[i-1][1][1]+prices[i],dp[i-1][0][2])`
+持股，未卖出过股票：可能是今天买的，也可能是之前买的（昨天也持股）
+`dp[i][1][0]=max(dp[i-1][0][0]-prices[i],dp[i-1][1][0])`
+持股，卖出过1次股票：可能是今天买的，也可能是之前买的（昨天也持股）
+`dp[i][1][1]=max(dp[i-1][0][1]-prices[i],dp[i-1][1][1])`
+持股，卖出过2次股票：最多交易2次，这种情况不存在
+`dp[i][1][2]=float('-inf')`
+
+### 188 只能进行 k 次的股票交易
+
+188. Best Time to Buy and Sell Stock IV (Hard)
+
+[Leetcode](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/description/) / [力扣](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/description/)
+
+[leetcode-cn解析][https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/javayi-ge-si-lu-da-bao-suo-you-gu-piao-t-pd1p/]
+
+## 字符串编辑
+
+### 583 删除两个字符串的字符使它们相等
+
+583. Delete Operation for Two Strings (Medium)
+
+[Leetcode](https://leetcode.com/problems/delete-operation-for-two-strings/description/) / [力扣](https://leetcode-cn.com/problems/delete-operation-for-two-strings/description/)
+
+#### Solution 1：递归
+
+可以转换为求两个字符串的最长公共子序列问题
+
+**Complexity Analysis**
+
+- Time complexity : $O(2^{max(m,n)})$. Size of recursion tree will be $2^(m+n)$. Here, m*m* and n refer to the lengths of s1 and s2 respectively.
+- Space complexity : $O(\text{max}(m,n))$. The depth of the recursion tree will go upto $\text{max}(m,n)$.
+
+#### Solution 2：Longest Common Subsequence with Memoization
+
+**Complexity Analysis**
+
+- Time complexity : O*(*m∗n). memo array of size mxn needs to be filled once. Here, m and n refer to the length of the strings s1 and s2 respectively.
+- Space complexity : O*(*m∗n). memo array of size mxn is used. Also, The depth of the recursion tree will go upto $\text{max}(m,n)$
+
+#### Solution 3：Longest Common Subsequence Dynamic Programming
+
+**Complexity Analysis**
+
+- Time complexity :$ O(m*n)$. We need to fill in the $dp$ array of size $mxn$. Here, m and n refer to the lengths of s1 and s2
+- Space complexity : O*(*m∗n). dp  array of size mxn is used.
+
+#### Solution 4：without using lcs dynamic programming
+
+`dp[i][j]` refers to the number of deletions required to equalize the two strings if we consider the strings' length upto $(i-1)^{th}$ index and $(j-1)^{th}$ index for s1  and s2  respectively. 
+
+**Complexity Analysis**
+
+- Time complexity :$ O(m*n)$. We need to fill in the $dp$ array of size $mxn$. Here, m and n refer to the lengths of s1 and s2
+- Space complexity : O*(*m∗n). dp  array of size mxn is used.
+
+#### Solution 5： 1-D dp
+
+**Complexity Analysis**
+
+- Time complexity :$ O(m*n)$. We need to fill in the $dp$ array of size $mxn$. Here, m and n refer to the lengths of s1 and s2
+- Space complexity : O(n). dp  array of size n is used.
+
+### 72 编辑距离
+
+72. Edit Distance (Hard)
+
+[Leetcode](https://leetcode.com/problems/edit-distance/description/) / [力扣](https://leetcode-cn.com/problems/edit-distance/description/)
+
+
+
+### 650 复制粘贴字符
+
+650. 2 Keys Keyboard (Medium)
+
+[Leetcode](https://leetcode.com/problems/2-keys-keyboard/description/) / [力扣](https://leetcode-cn.com/problems/2-keys-keyboard/description/)
 
