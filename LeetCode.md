@@ -1893,7 +1893,8 @@ $$
 
 ```java
 //一种讨巧的做法
-Arrays.stream(dp).max().orElse(0)
+Arrays.stream(dp).max().orElse(0);
+return Arrays.stream(dp).max().getAsInt();
 ```
 
 使用 Stream 求最大值会导致运行时间过长，可以改成以下形式：
@@ -2673,11 +2674,78 @@ $dp[i][1]=max\{dp[i−1][1],dp[i−1][0]−prices[i]\}$
 
 [Leetcode](https://leetcode.com/problems/edit-distance/description/) / [力扣](https://leetcode-cn.com/problems/edit-distance/description/)
 
+`dp[i][j] `代表 word1 到 i 位置转换成 word2 到 j 位置需要最少步数
 
+所以，
+
+当 word1[i] == word2[j]，`dp[i][j] = dp[i-1][j-1]`；
+
+当 word1[i] != word2[j]，`dp[i][j] = min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]) + 1`
+
+其中，`dp[i-1][j-1]` 表示替换操作，`dp[i-1][j]` 表示删除操作，`dp[i][j-1] `表示插入操作。
+
+注意，针对第一行，第一列要单独考虑，我们引入 '' 下图所示：
+
+![image-20211109224812280](LeetCode.assets/image-20211109224812280.png)
+
+对“dp[i-1][j-1] 表示替换操作，dp[i-1][j] 表示删除操作，dp[i][j-1] 表示插入操作。”的补充理解：
+
+以 word1 为 "horse"，word2 为 "ros"，且 dp[5][3] 为例，即要将 word1的前 5 个字符转换为 word2的前 3 个字符，也就是将 horse 转换为 ros，因此有：
+
+(1) `dp[i-1][j-1]`，即先将 word1 的前 4 个字符 hors 转换为 word2 的前 2 个字符 ro，然后将第五个字符 word1[4]（因为下标基数以 0 开始） 由 e 替换为 s（即替换为 word2 的第三个字符，word2[2]）
+
+(2) `dp[i][j-1]`，即先将 word1 的前 5 个字符 horse 转换为 word2 的前 2 个字符 ro，然后在末尾补充一个 s，即插入操作
+
+(3) `dp[i-1][j]`，即先将 word1 的前 4 个字符 hors 转换为 word2 的前 3 个字符 ros，然后删除 word1 的第 5 个字符
 
 ### 650 复制粘贴字符
 
 650. 2 Keys Keyboard (Medium)
 
 [Leetcode](https://leetcode.com/problems/2-keys-keyboard/description/) / [力扣](https://leetcode-cn.com/problems/2-keys-keyboard/description/)
+
+#### Solution 1：Prime Factorization
+
+**Intuition**
+
+We can break our moves into groups of `(copy, paste, ..., paste)`. Let `C` denote copying and `P` denote pasting. Then for example, in the sequence of moves `CPPCPPPPCP`, the groups would be `[CPP][CPPPP][CP]`.
+
+Say these groups have lengths `g_1, g_2, ...`. After parsing the first group, there are `g_1` `'A'`s. After parsing the second group, there are `g_1 * g_2` `'A'`s, and so on. At the end, there are `g_1 * g_2 * ... * g_n` `'A'`s.
+
+We want exactly `N = g_1 * g_2 * ... * g_n`. If any of the `g_i` are composite, say `g_i = p * q`, then we can split this group into two groups (the first of which has one copy followed by `p-1` pastes, while the second group having one copy and `q-1` pastes).
+
+Such a split never uses more moves: we use `p+q` moves when splitting, and `pq` moves previously. As `p+q <= pq` is equivalent to `1 <= (p-1)(q-1)`, which is true as long as `p >= 2` and `q >= 2`.
+
+**Algorithm** By the above argument, we can suppose `g_1, g_2, ...` is the prime factorization of `N`, and the answer is therefore the sum of these prime factors.
+
+**Complexity Analysis**
+
+- Time Complexity: $O(\sqrt{N})$. When `N` is the square of a prime, our loop does $O(\sqrt{N})$ steps.
+- Space Complexity: $O(1)$, the space used by `ans` and `d`.
+
+#### Solution 2：dfs
+
+#### Solution 3：打表
+
+我们发现，对于某个 minSteps(i) 而言为定值，且数据范围只有 1000，因此考虑使用打表来做
+
+#### Solution 4：动态规划
+
+[leetcode-cn解析][https://leetcode-cn.com/problems/2-keys-keyboard/solution/gong-shui-san-xie-yi-ti-san-jie-dong-tai-f035/]
+
+#### Solution 5：动态规划+优化
+
+观察动态规划的转移方程，不难发现有很多无效的状态，比如：
+
+`dp[3][2]`，根据转移方程，`dp[3][2]=dp[1][2]+1`，而` dp[1][2] `表示当前字符为 1个，剪切板字符数量为 2 个，这明显是不存在的。
+`dp[5][2]`，根据转移方程，`dp[5][2]=dp[3][2]+1`，因为` dp[3][2]` 是无效的，所以，`dp[5][2]` 也是无效的。
+那么，什么样的状态才是有效的呢？
+
+其实，不难发现，只有当 `i % j == 0 `的时候，这个状态才是有效的。
+
+因为，只有当` i % j == 0` 时，`dp[i][j]=dp[i-j][j]` 中，`dp[i-j]` 也才是有效的。
+
+比如，以 `dp[9][3]` 为例，`dp[9][3]=dp[6][3]+1`，而 `dp[6][3]=dp[3][3]+1`，而 `dp[3][3]=dp[3][1]+1`（因为`dp[3][2]` 无效，所以，只需要考虑`dp[3][1]`就可以了），最后 `dp[3][1]=dp[2][1]+1`，而 `dp[2][1]=dp[1][1]+1`，`dp[1][1]` 为我们的初始值。
+
+所以，我们可以进一步优化我们的动态规划，当 `i%j==0` 的时候才计算。
 
