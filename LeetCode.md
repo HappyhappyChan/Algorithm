@@ -1909,6 +1909,8 @@ return ret;
 
 #### Solution 2：二分查找优化
 
+[leetcode-cn][https://leetcode-cn.com/problems/longest-increasing-subsequence/solution/zui-chang-shang-sheng-zi-xu-lie-by-leetcode-soluti/]
+
 以上解法的时间复杂度为 O(N2)，可以使用二分查找将时间复杂度降低为 O(NlogN)。
 
 定义一个 tails 数组，其中 tails[i] 存储长度为 i + 1 的最长递增子序列的最后一个元素。对于一个元素 x，
@@ -2458,7 +2460,7 @@ dict 中的单词没有使用次数的限制，因此这是一个完全背包问
 ["lee", "tc", "cod"]
 ```
 
-求解顺序的完全背包问题时，对物品的迭代应该放在最里层，对背包的迭代放在外层，只有这样才能让物品按一定顺序放入背包中。
+==求解顺序的完全背包问题时，对物品的迭代应该放在最里层，对背包的迭代放在外层，只有这样才能让物品按一定顺序放入背包中。==
 
 [背包问题总结][https://leetcode-cn.com/problems/word-break/solution/yi-tao-kuang-jia-jie-jue-bei-bao-wen-ti-kchg9/]
 
@@ -2539,6 +2541,8 @@ dict 中的单词没有使用次数的限制，因此这是一个完全背包问
 所以：dp[i][2]=dp[i-1][1]+p[i]
 
 总结：最后一天的最大收益有两种可能，而且一定是“不持有”状态下的两种可能，把这两种“不持有”比较一下大小，返回即可
+
+==看LeetCode刷题手册==
 
 ### 714 需要交易费用的股票交易
 
@@ -2748,4 +2752,538 @@ Such a split never uses more moves: we use `p+q` moves when splitting, and `pq` 
 比如，以 `dp[9][3]` 为例，`dp[9][3]=dp[6][3]+1`，而 `dp[6][3]=dp[3][3]+1`，而 `dp[3][3]=dp[3][1]+1`（因为`dp[3][2]` 无效，所以，只需要考虑`dp[3][1]`就可以了），最后 `dp[3][1]=dp[2][1]+1`，而 `dp[2][1]=dp[1][1]+1`，`dp[1][1]` 为我们的初始值。
 
 所以，我们可以进一步优化我们的动态规划，当 `i%j==0` 的时候才计算。
+
+# 数学
+
+## 素数分解
+
+每一个数都可以分解成素数的乘积，例如 $84 = 2^2 * 3^1 * 5^0 * 7^1 * 11^0 * 13^0 * 17^0 * …$
+
+## 整除
+
+令 $x = 2^{m0} * 3^{m1} * 5^{m2} * 7^{m3} * 11^{m4} *$ …
+
+令 $y = 2^{n0} * 3^{n1} * 5^{n2} * 7^{n3} * 11^{n4} *$ …
+
+如果 x 整除 y（y mod x == 0），则对于所有 i，mi <= ni。
+
+## 最大公约数最小公倍数
+
+x 和 y 的最大公约数为：$gcd(x,y) = 2^{min(m0,n0)} * 3^{min(m1,n1)} * 5^{min(m2,n2) }* ...$
+
+x 和 y 的最小公倍数为：$lcm(x,y) = 2^{max(m0,n0)} * 3^{max(m1,n1)} * 5^{max(m2,n2)} * ...$
+
+### 204  生成素数序列
+
+204. Count Primes (Easy)
+
+[Leetcode](https://leetcode.com/problems/count-primes/description/) / [力扣](https://leetcode-cn.com/problems/count-primes/description/)
+
+埃拉托斯特尼筛法在每次找到一个素数时，将能被素数整除的数排除掉。
+
+### 最大公约数
+
+```java
+int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+```
+
+最小公倍数为两数的乘积除以最大公约数。
+
+```java
+int lcm(int a, int b) {
+    return a * b / gcd(a, b);
+}
+```
+
+### 使用位操作和减法求解最大公约数
+
+[编程之美：2.7](https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode 题解 - 数学.md#)
+
+对于 a 和 b 的最大公约数 f(a, b)，有：
+
+- 如果 a 和 b 均为偶数，f(a, b) = 2*f(a/2, b/2);
+- 如果 a 是偶数 b 是奇数，f(a, b) = f(a/2, b);
+- 如果 b 是偶数 a 是奇数，f(a, b) = f(a, b/2);
+- 如果 a 和 b 均为奇数，f(a, b) = f(b, a-b);
+
+乘 2 和除 2 都可以转换为移位操作。
+
+```java
+public int gcd(int a, int b) {
+    if (a < b) {
+        return gcd(b, a);
+    }
+    if (b == 0) {
+        return a;
+    }
+    boolean isAEven = isEven(a), isBEven = isEven(b);
+    if (isAEven && isBEven) {
+        return 2 * gcd(a >> 1, b >> 1);
+    } else if (isAEven && !isBEven) {
+        return gcd(a >> 1, b);
+    } else if (!isAEven && isBEven) {
+        return gcd(a, b >> 1);
+    } else {
+        return gcd(b, a - b);
+    }
+}
+```
+
+## 进制转换
+
+### 504 7进制
+
+504. Base 7 (Easy)
+
+[Leetcode](https://leetcode.com/problems/base-7/description/) / [力扣](https://leetcode-cn.com/problems/base-7/description/)
+
+Java 中 static String toString(int num, int radix) 可以将一个整数转换为 radix 进制表示的字符串。
+
+```java
+public String convertToBase7(int num) {
+    return Integer.toString(num, 7);
+}
+```
+
+StringBuilder里面有个将字符串反向输出的函数
+
+```java
+String ret = sb.reverse().toString();
+```
+
+### 405 16进制
+
+405. Convert a Number to Hexadecimal (Easy)
+
+[Leetcode](https://leetcode.com/problems/convert-a-number-to-hexadecimal/description/) / [力扣](https://leetcode-cn.com/problems/convert-a-number-to-hexadecimal/description/)
+
+#### Solution 1：位运算
+
+【效率最高】
+
+题目要求将给定的整数 $\textit{num}$ 转换为十六进制数，负整数使用补码运算方法。
+
+在补码运算中，最高位表示符号位，符号位是 0 表示正整数和零，符号位是 1 表示负整数。32 位有符号整数的二进制数有 32 位，由于一位十六进制数对应四位二进制数，因此 32 位有符号整数的十六进制数有 8 位。将 $\textit{num}$的二进制数按照四位一组分成 8 组，依次将每一组转换为对应的十六进制数，即可得到 $\textit{num}$ 的十六进制数。
+
+假设二进制数的 8 组从低位到高位依次是第 0 组到第 7 组，则对于第 i 组，可以通过 ($\textit{nums}$ >> ($4 \times i $)) $ \& $0xf 得到该组的值，其取值范围是 0 到 15（即十六进制的 $\text{f}$）。将每一组的值转换为十六进制数的做法如下：
+
+复杂度分析
+
+时间复杂度：O(k)，其中 k 是整数的十六进制数的位数，这道题中 k=8。无论 num 的值是多少，都需要遍历 num 的十六进制表示的全部数位。
+
+空间复杂度：O(k)，其中 k 是整数的十六进制数的位数，这道题中 k=8。空间复杂度主要取决于中间结果的存储空间，这道题中需要存储 num 的十六进制表示中的除了前导零以外的全部数位。
+
+#### Solution 2：模拟+进制转换
+
+不断循环`num % k`和`num/k`的操作来构造出`k`进制的每一位。
+
+但需要处理`补码`，对于负数的`num`，我们需要先在`num`基础上加上$2^{32}$的偏移量，再进行进制转换。
+
+时间复杂度：复杂度取决于构造的十六进制数的长度，固定为 C = 8 。整体复杂度为 O(C) 
+空间复杂度：复杂度取决于构造的十六进制数的长度，固定为 C = 8 。整体复杂度为 O(C) 
+
+字符和数字的转换
+
+```java
+char c = (char)(u+'0');
+c = (char)(u-10+'a');
+```
+
+#### Solution 3：位运算+分组换算
+
+同时，由于我们是直接对长度为32的二进制进行分组转算(4个为一组，共8组)，而长度为32的二进制本身就是使用补码规则来表示的，因此我们无须额外处理「补码」问题。
+具体的，我们将num 与15= $(1111)_2$进行&运算，然后对num进行无符号右移4位来实现每4位处理。
+
+### 168 26进制
+
+168. Excel Sheet Column Title (Easy)
+
+[Leetcode](https://leetcode.com/problems/excel-sheet-column-title/description/) / [力扣](https://leetcode-cn.com/problems/excel-sheet-column-title/description/)
+
+#### Solution 1：github
+
+因为是从 1 开始计算的，而不是从 0 开始，因此需要对 n 执行 -1 操作。
+
+#### Solution 2：mine
+
+发现只有26的整数倍的时候才会出错，那就将26的整数倍单独领出来，然后n不是 n/=26 而是 n/=27.【举个28的例子就可以理解了】
+
+## 阶乘
+
+### 172  统计阶乘尾部有多少个 0
+
+172. Factorial Trailing Zeroes (Easy)
+
+[Leetcode](https://leetcode.com/problems/factorial-trailing-zeroes/description/) / [力扣](https://leetcode-cn.com/problems/factorial-trailing-zeroes/description/)
+
+#### Solution 1：Math
+
+尾部的 0 由 2 * 5 得来，2 的数量明显多于 5 的数量，因此只要统计有多少个 5 即可。
+
+对于一个数 N，它所包含 5 的个数为：$N/5 + {N/5}^2 + {N/5}^3 + ...$，其中 N/5 表示不大于 N 的数中 5 的倍数贡献一个 5，${N/5}^2$ 表示不大于 N 的数中 $5^2$ 的倍数再贡献一个 5 ...。
+
+```java
+public int trailingZeroes(int n) {
+    return n == 0 ? 0 : n / 5 + trailingZeroes(n / 5);
+}
+```
+
+如果统计的是 N! 的二进制表示中最低位 1 的位置，只要统计有多少个 2 即可，该题目出自 [编程之美：2.2](https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode 题解 - 数学.md#) 。和求解有多少个 5 一样，2 的个数为 $N/2 + {N/2}^2 + {N/2}^3 + ...$
+
+## 字符串加法减法
+
+### 67 二进制加法
+
+67. Add Binary (Easy)
+
+[Leetcode](https://leetcode.com/problems/add-binary/description/) / [力扣](https://leetcode-cn.com/problems/add-binary/description/)
+
+#### Solution 1：java函数
+
+```java
+public static String addBinary3(String a, String b) {
+    return Integer.toBinaryString(Integer.parseInt(a, 2) + Integer.parseInt(b,2));
+}
+```
+
+如果 a  的位数是 n ，b  的位数为 m ，这个算法的渐进时间复杂度为 O(n + m) 。
+
+并且在 Java 中：
+
+如果字符串超过 33  位，不能转化为 Integer
+如果字符串超过 65  位，不能转化为 Long
+如果字符串超过 500000001  位，不能转化为 BigInteger
+
+#### Solution 2：模拟
+
+我们可以借鉴「列竖式」的方法，末尾对齐，逐位相加。在十进制的计算中「逢十进一」，二进制中我们需要「逢二进一」。
+
+具体的，我们可以取 n=max{∣a∣,∣b∣}，循环 n  次，从最低位开始遍历。我们使用一个变量  carry  表示上一个位置的进位，初始值为 0 。记当前位置对其的两个位为 $a_i$  和 $b_i$ ，则每一位的答案为 $({\rm carry} + a_i + b_i) \bmod{2}$，下一位的进位为 $\lfloor \frac{{\rm carry} + a_i + b_i}{2} \rfloor$。重复上述步骤，直到数字 a  和 b  的每一位计算完毕。最后如果 carry 的最高位不为  0，则将最高位添加到计算结果的末尾。
+
+注意，为了让各个位置对齐，你可以先反转这个代表二进制数字的字符串，然后低下标对应低位，高下标对应高位。当然你也可以直接把 a  和 b  中短的那一个补  0 直到和长的那个一样长，然后从高位向低位遍历，对应位置的答案按照顺序存入答案字符串内，最终将答案串反转。这里的代码给出第一种的实现。
+
+复杂度分析
+
+假设 $n = \max\{ |a|, |b| \}$。
+
+时间复杂度： O(n)，这里的时间复杂度来源于顺序遍历 a  和  b。
+空间复杂度： O(1)，除去答案所占用的空间，这里使用了常数个临时变量。
+
+####  Solution 3：位运算
+
+如果不允许使用加减乘除，则可以使用位运算替代上述运算中的一些加减乘除的操作。
+
+```python
+A  B  ^  &  +
+0  0  0  0  0+0=00
+0  1  1  0  0+1=01
+1  0  1  0  1+0=01
+1  1  0  1  1+1=10
+```
+
+统一先计算^这样没有进位，然后统一把进位求出来，加进去。 这样可能还会有进位，所以就继续循环，直到没有进位
+
+我们可以设计这样的算法来计算：
+
+把 a  和 b  转换成整型数字 x  和 y ，在接下来的过程中， x 保存结果， y 保存进位。
+当进位不为  0 时
+计算当前  x 和 y  的无进位相加结果：answer = x ^ y
+计算当前  x 和 y  的进位：carry = (x & y) << 1
+完成本次循环，更新 x = answer，y = carry
+返回 x  的二进制形式
+
+ 为什么这个方法是可行的呢？在第一轮计算中，answer 的最后一位是 x 和 y  相加之后的结果，carry 的倒数第二位是 x 和 y  最后一位相加的进位。接着每一轮中，由于 carry 是由 x  和 y  按位与并且左移得到的，那么最后会补零，所以在下面计算的过程中后面的数位不受影响，而每一轮都可以得到一个低  i 位的答案和它向低 i + 1 位的进位，也就模拟了加法的过程。
+
+复杂度分析
+
+时间复杂度：$O(|a| + |b| + X \cdot \max ({|a| + |b|}))$，字符串转化成数字需要的时间代价为 $O(|a| + |b|)$，计算的时间代价为 $O(\max \{ |a|, |b| \})$， X 为位运算所需的时间，因为这里用到了高精度计算，所以位运算的时间不一定为 O(1) 。
+空间复杂度：这里使用了 x  和 y  来保存 a  和 b  的整数形式，如果用 Python 实现，这里用到了 Python 的高精度功能，实际的空间代价是 $O(|a| + |b|) $。
+
+### 415 字符串加法
+
+415. Add Strings (Easy)
+
+[Leetcode](https://leetcode.com/problems/add-strings/description/) / [力扣](https://leetcode-cn.com/problems/add-strings/description/)
+
+#### Solution 1: lib function
+
+```java
+//不管是Integer.parseInt 还是Long.parseLong 都会有更大更长的数
+long a = Long.parseLong(num1);
+int b = Integer.parseInt(num2);
+```
+
+会报错的
+
+#### Solution 2：模拟
+
+跟前面的二进制加法类似
+
+## 相遇问题
+
+### 462 改变数组元素使所有的数组元素都相等
+
+462. Minimum Moves to Equal Array Elements II (Medium)
+
+[Leetcode](https://leetcode.com/problems/minimum-moves-to-equal-array-elements-ii/description/) / [力扣](https://leetcode-cn.com/problems/minimum-moves-to-equal-array-elements-ii/description/)
+
+#### Solution 1：mine
+
+要相等，那就可能跟平均数、中位数、众数有关。然后我就一个个试，先试平均数，发现报错，错误的案例用中位数可以过，那就用中位数，然后就通过了。
+
+#### Solution 2：中位数
+
+这是个典型的相遇问题，移动距离最小的方式是所有元素都移动到中位数。理由如下：
+
+设 m 为中位数。a 和 b 是 m 两边的两个元素，且 b > a。要使 a 和 b 相等，它们总共移动的次数为 b - a，这个值等于 (b - m) + (m - a)，也就是把这两个数移动到中位数的移动次数。
+
+设数组长度为 N，则可以找到 N/2 对 a 和 b 的组合，使它们都移动到 m 的位置。
+
+## 多数投票问题
+
+### 169  数组中出现次数多于 n / 2 的元素
+
+169. Majority Element (Easy)
+
+[Leetcode](https://leetcode.com/problems/majority-element/description/) / [力扣](https://leetcode-cn.com/problems/majority-element/description/)
+
+#### Solution 1：排序
+
+先对数组排序，最中间那个数出现次数一定多于 n / 2。
+
+**Complexity Analysis**
+
+- Time complexity : $O(nlgn)$
+
+  Sorting the array costs $O(nlgn)$ time in Python and Java, so it dominates the overall runtime.
+
+- Space complexity : $O(1)$ or ($O(n)$)
+
+  We sorted `nums` in place here - if that is not allowed, then we must spend linear additional space on a copy of `nums` and sort the copy instead.
+
+#### Solution 2：多数投票
+
+可以利用 Boyer-Moore Majority Vote Algorithm 来解决这个问题，使得时间复杂度为 O(N)。可以这么理解该算法：使用 cnt 来统计一个元素出现的次数，当遍历到的元素和统计元素不相等时，令 cnt--。如果前面查找了 i 个元素，且 cnt == 0，说明前 i 个元素没有 majority，或者有 majority，但是出现的次数少于 i / 2，因为如果多于 i / 2 的话 cnt 就一定不会为 0。此时剩下的 n - i 个元素中，majority 的数目依然多于 (n - i) / 2，因此继续查找就能找出 majority。
+
+投票法是遇到相同的则票数 + 1，遇到不同的则票数 - 1。
+且“多数元素”的个数> ⌊ n/2 ⌋，其余元素的个数总和<= ⌊ n/2 ⌋。
+因此“多数元素”的个数 - 其余元素的个数总和 的结果 肯定 >= 1。
+这就相当于每个“多数元素”和其他元素 两两相互抵消，抵消到最后肯定还剩余至少1个“多数元素”。
+
+无论数组是1 2 1 2 1，亦或是1 2 2 1 1，总能得到正确的候选人。
+
+ 
+
+**Complexity Analysis**
+
+- Time complexity : O(n) 
+
+  Boyer-Moore performs constant work exactly n*n* times, so the algorithm runs in linear time.
+
+- Space complexity : O(1) 
+
+  Boyer-Moore allocates only constant additional memory.
+
+#### Solution 3：Brute Force
+
+**Complexity Analysis**
+
+- Time complexity : $O(n^2)$
+
+  The brute force algorithm contains two nested `for` loops that each run for n  iterations, adding up to quadratic time complexity.
+
+- Space complexity : O(1) 
+
+  The brute force solution does not allocate additional space proportional to the input size.
+
+## 其它
+
+### 367 平方数
+
+367. Valid Perfect Square (Easy)
+
+[Leetcode](https://leetcode.com/problems/valid-perfect-square/description/) / [力扣](https://leetcode-cn.com/problems/valid-perfect-square/description/)
+
+#### Solution 1：等差数列
+
+平方序列：1,4,9,16,..
+
+间隔：3,5,7,...
+
+间隔为等差数列，使用这个特性可以得到从 1 开始的平方序列。
+
+### 326  3 的 n 次方
+
+326. Power of Three (Easy)
+
+[Leetcode](https://leetcode.com/problems/power-of-three/description/) / [力扣](https://leetcode-cn.com/problems/power-of-three/description/)
+
+#### Solution 1：循环迭代
+
+n < 1，F
+
+然后进行循环判断，如果 n % 3 == 0, n /= 3; 否则
+
+```java
+return n == 1;
+```
+
+**Complexity Analysis**
+
+- Time complexity : $O(\log_b(n))$. In our case that is $O(\log_3n)$. The number of divisions is given by that logarithm.
+- Space complexity : $O(1)$. We are not using any additional memory.
+
+#### Solution 2：Base Conversion
+
+```java
+String baseChange = Integer.toString(number, base);
+```
+
+Regular Expression匹配判断
+
+```java
+boolean powerOfThree = baseChange.matches("^10*$")
+```
+
+一定要是1开头，后面都是0，才是3的倍数
+
+**Complexity Analysis**
+
+- Time complexity : $O(\log_3n)$
+
+  Assumptions:
+
+  - `Integer.toString()` - Base conversion is generally implemented as a repeated division. The complexity of should be similar to our Approach 1: $O(\log_3n)$.
+  - `String.matches()` - Method iterates over the entire string. The number of digits in the base 3 representation of `n` is $O(\log_3n)$.
+
+- Space complexity : $O(\log_3n)$.
+
+  We are using two additional variables,
+
+  - The string of the base 3 representation of the number (size $\log_3n$)
+  - The string of the regular expression (constant size)
+
+#### Solution 3：Mathematics
+
+$n=3^i$
+
+$i = log_3(n)$
+
+$i = \frac{log_b(n)}{log_b(3)}$
+
+只用判断i是否是整数即可
+
+**Common pitfalls**
+
+This solution is problematic because we start using `double`s, which means we are subject to precision errors. This means, we should never use `==` when comparing `double`s. That is because the result of `Math.log10(n) / Math.log10(3)` could be `5.0000001` or `4.9999999`. This effect can be observed by using the function `Math.log()` instead of `Math.log10()`.
+
+In order to fix that, we need to compare the result against an `epsilon`.
+
+```java
+return (Math.log(n) / Math.log(3) + epsilon) % 1 <= 2 * epsilon;
+```
+
+#### Solution 5：Integer Limitation
+
+【这个似乎可以扩展到所有质数的平方判断】
+
+In particular, `n` is of type `int`. In Java, this means it is a 4 byte, signed integer [ref]. The maximum value of this data type is **2147483647**. Three ways of calculating this value are
+
+- [Google](http://stackoverflow.com/questions/15004944/max-value-of-integer)
+- `System.out.println(Integer.MAX_VALUE);`
+
+- MaxInt = $\frac{ 2^{32} }{2} - 1$ since we use 32 bits to represent the number, half of the range is used for negative numbers and 0 is part of the positive numbers
+
+Knowing the limitation of `n`, we can now deduce that the maximum value of `n` that is also a power of three is **1162261467**. We calculate this as:
+
+$3^{\lfloor{}\log_3{MaxInt}\rfloor{}} = 3^{\lfloor{}19.56\rfloor{}} = 3^{19} = 11622614673$
+
+Therefore, the possible values of `n` where we should return `true` are $3^0$, $3^1$ ... $3^{19}$. Since 3 is a prime number, the only divisors of $3^{19}$ are $3^0$, $3^1$ ... $3^{19}$, therefore all we need to do is divide $3^{19}$ by `n`. A remainder of **0** means `n` is a divisor of $3^{19}$ and therefore a power of three.
+
+**Complexity Analysis**
+
+- Time complexity : O(1) . We are only doing one operation.
+- Space complexity : O(1) . We are not using any additional memory
+
+### 238 乘积数组
+
+238. Product of Array Except Self (Medium)
+
+[Leetcode](https://leetcode.com/problems/product-of-array-except-self/description/) / [力扣](https://leetcode-cn.com/problems/product-of-array-except-self/description/)
+
+#### Solution 1：mine
+
+求出全部的乘积，然后除以对应的数。但如果遇到有0的就尴尬了，要求出排除0之后的乘积。
+
+但如果给的数组本身就都是0，就不好办了。-->加多一个数来统计有多少个0，如果cnt == len(num) 或者 cnt >= 2，就全部都填0。
+
+Another 特例：
+
+[0, 4, 0] ---> [0, 0, 0]
+
+看代码吧，特例太多了
+
+#### Solution 2：双指针
+
+看github代码， 很巧妙！
+
+### 628 找出数组中的乘积最大的三个数
+
+628. Maximum Product of Three Numbers (Easy)
+
+[Leetcode](https://leetcode.com/problems/maximum-product-of-three-numbers/description/) / [力扣](https://leetcode-cn.com/problems/maximum-product-of-three-numbers/description/)
+
+#### Solution 1：mine
+
+看我写的代码，分成以下几种情况
+
+1 全是正数 or 全是负数 
+
+排序都取最大的3个相乘
+
+2 有正数有负数
+
+res1 = 取最大的3个相乘
+
+res2 = 取最小的2个负数【如果有2个负数的话】*最大的正数
+
+返回最大的res
+
+#### Solution 2：Brute Force
+
+The simplest solution is to consider every triplet out of the given nums array and check their product and find out the maximum product out of them.
+
+**Complexity Analysis**
+
+- Time complexity : $O(n^3)$. We need to consider every triplet from nums array of length n.
+- Space complexity : O(1). Constant extra space is used.
+
+#### Solution 3：Using sorting
+
+跟我的思想类似，不过他简略很多
+
+```java
+public class Solution {
+    public int maximumProduct(int[] nums) {
+        Arrays.sort(nums);
+        return Math.max(nums[0] * nums[1] * nums[nums.length - 1], nums[nums.length - 1] * nums[nums.length - 2] * nums[nums.length - 3]);
+    }
+}
+```
+
+**Complexity Analysis**
+
+- Time complexity : $O\big(n\log n\big)$. Sorting the nums array takes $n\log n$ time.
+- Space complexity : $O(\log n)$. Sorting takes $O(\log n)$space.
+
+#### Solution 3：Single Scan
+
+我们没有必要进行排序，根据`Solution 2`，我们只需要找到最小的2个数，和最大的3个数，然后比较他们的乘积即可。
+
+**Complexity Analysis**
+
+- Time complexity : O(n) . Only one iteration over the nums array of length n is required.
+- Space complexity : O(1) . Constant extra space is used.
 
