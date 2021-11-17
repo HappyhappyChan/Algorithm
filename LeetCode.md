@@ -3287,3 +3287,346 @@ public class Solution {
 - Time complexity : O(n) . Only one iteration over the nums array of length n is required.
 - Space complexity : O(1) . Constant extra space is used.
 
+# 链表
+
+## 160 找出两个链表的交点
+
+160. Intersection of Two Linked Lists (Easy)
+
+[Leetcode](https://leetcode.com/problems/intersection-of-two-linked-lists/description/) / [力扣](https://leetcode-cn.com/problems/intersection-of-two-linked-lists/description/)
+
+设 A 的长度为 a + c，B 的长度为 b + c，其中 c 为尾部公共部分长度，可知 a + c + b = b + c + a。
+
+当访问 A 链表的指针访问到链表尾部时，令它从链表 B 的头部开始访问链表 B；同样地，当访问 B 链表的指针访问到链表尾部时，令它从链表 A 的头部开始访问链表 A。这样就能控制访问 A 和 B 两个链表的指针能同时访问到交点。
+
+如果不存在交点，那么 a + b = b + a，以下实现代码中 l1 和 l2 会同时为 null，从而退出循环。
+
+如果只是判断是否存在交点，那么就是另一个问题，即 [编程之美 3.6](https://github.com/CyC2018/CS-Notes/blob/master/notes) 的问题。有两种解法：
+
+- 把第一个链表的结尾连接到第二个链表的开头，看第二个链表是否存在环；
+- 或者直接比较两个链表的最后一个节点是否相同。
+
+## 206 链表反转
+
+206. Reverse Linked List (Easy)
+
+[Leetcode](https://leetcode.com/problems/reverse-linked-list/description/) / [力扣](https://leetcode-cn.com/problems/reverse-linked-list/description/)
+
+#### Solution 1：递归
+
+#### Solution 2：头插法
+
+## 21 归并两个有序的链表
+
+21. Merge Two Sorted Lists (Easy)
+
+[Leetcode](https://leetcode.com/problems/merge-two-sorted-lists/description/) / [力扣](https://leetcode-cn.com/problems/merge-two-sorted-lists/description/)
+
+#### Solution 1：递归
+
+终止条件：当两个链表都为空时，表示我们对链表已合并完成。
+如何递归：我们判断 l1 和 l2 头结点哪个更小，然后较小结点的 next 指针指向其余结点的合并结果。（调用递归）
+
+时间复杂度：O(m+n)。
+
+m，n为 l1 和 l2 的元素个数。递归函数每次去掉一个元素，直到两个链表都为空，因此需要调用  R=O(m+n) 次。而在递归函数中我们只进行了 next 指针的赋值操作，复杂度为  O(1)，故递归的总时间复杂度为 ${\mathcal{O}(T) = R * \mathcal{O}(1)}={\mathcal{O}}(m + n)$。
+
+空间复杂度：${\mathcal{O}}(m + n)$。**
+
+对于递归调用 self.mergeTwoLists()，当它遇到终止条件准备回溯时，已经递归调用了 m+n  次，使用了 m+nm+n 个栈帧，故最后的空间复杂度为 ${\mathcal{O}}(m + n)$ 。
+
+#### Solution 2：头结点
+
+同时遍历两个链表，当前遍历的结点，谁的结点小，就把谁的结点摘下来，安装在新的链表上
+
+时间复杂度：O(n + m) ，其中 n  和 m 分别为两个链表的长度。因为每次循环迭代中，l1 和 l2 只有一个元素会被放进合并链表中， 因此 while 循环的次数不会超过两个链表的长度之和。所有其他操作的时间复杂度都是常数级别的，因此总的时间复杂度为 O(n+m) 。
+
+空间复杂度：O(1) 。我们只需要常数的空间存放若干变量。
+
+## 83 从有序链表中删除重复节点
+
+83. Remove Duplicates from Sorted List (Easy)
+
+[Leetcode](https://leetcode.com/problems/remove-duplicates-from-sorted-list/description/) / [力扣](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list/description/)
+
+#### Solution 1：一次遍历
+
+由于给定的链表是排好序的，因此重复的元素在链表中出现的位置是连续的，因此我们只需要对链表进行一次遍历，就可以删除重复的元素。
+
+具体地，我们从指针  cur 指向链表的头节点，随后开始对链表进行遍历。如果当前  cur 与  cur.next 对应的元素相同，那么我们就将 cur.next 从链表中移除；否则说明链表中已经不存在其它与  cur 对应的元素相同的节点，因此可以将  cur 指向 cur.next。
+
+当遍历完整个链表之后，我们返回链表的头节点即可。
+
+ **复杂度分析**
+
+- 时间复杂度：O(n) ，其中 n  是链表的长度。
+- 空间复杂度：O(1) 。
+
+#### Solution 2：递归
+
+看gituhb代码
+
+## 19 删除链表的倒数第 n 个节点
+
+19. Remove Nth Node From End of List (Medium)
+
+[Leetcode](https://leetcode.com/problems/remove-nth-node-from-end-of-list/description/) / [力扣](https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/description/)
+
+#### Solution 1：计算链表的长度
+
+从引入的头结点开始算，计算链表的长度为len. 则要删除的节点为[len - n]【从0开始计算】，遍历的时候遍历到[len-n+1]即为删除节点的前一个结点
+
+**复杂度分析**
+
+- 时间复杂度：O(L) ，其中 L  是链表的长度。
+- 空间复杂度：O(1) 。
+
+#### Solution 2：栈
+
+我们也可以在遍历链表的同时将所有节点依次入栈。根据栈「先进后出」的原则，我们弹出栈的第 n 个节点就是需要删除的节点，并且目前栈顶的节点就是待删除节点的前驱节点。这样一来，删除操作就变得十分方便了。
+
+**复杂度分析**
+
+- 时间复杂度：O(L) ，其中 L 是链表的长度。
+- 空间复杂度：O(L) ，其中 L  是链表的长度。主要为栈的开销。
+
+#### Solution 3：双指针
+
+【最高效】
+
+我们也可以在不预处理出链表的长度，以及使用常数空间的前提下解决本题。
+
+由于我们需要找到倒数第 n  个节点，因此我们可以使用两个指针 first 和  second 同时对链表进行遍历，并且  first 比 second 超前  n 个节点。当 first 遍历到链表的末尾时， second 就恰好处于倒数第 n  个节点。【这里的遍历到末尾即遍历到null】
+
+具体地，初始时 first 和  second 均指向头节点。我们首先使用  first 对链表进行遍历，遍历的次数为  n。此时， first 和  second 之间间隔了 n−1 个节点，即  first 比  second 超前了 n  个节点。
+
+在这之后，我们同时使用  first 和  second 对链表进行遍历。当  first 遍历到链表的末尾（即 first 为空指针）时， second 恰好指向倒数第 n  个节点。
+
+根据方法一和方法二，如果我们能够得到的是倒数第  n 个节点的前驱节点而不是倒数第  n 个节点的话，删除操作会更加方便。因此我们可以考虑在初始时将  second 指向哑节点，其余的操作步骤不变。这样一来，当  first 遍历到链表的末尾时， second 的下一个节点就是我们需要删除的节点。
+
+ ![p3](LeetCode.assets/p3.png)
+
+**复杂度分析**
+
+- 时间复杂度：O(L) ，其中 L 是链表的长度。
+- 空间复杂度：O(1) 。
+
+## 24 交换链表中的相邻结点
+
+24. Swap Nodes in Pairs (Medium)
+
+[Leetcode](https://leetcode.com/problems/swap-nodes-in-pairs/description/) / [力扣](https://leetcode-cn.com/problems/swap-nodes-in-pairs/description/)
+
+#### Solution 1：递归
+
+终止条件：链表没有结点，或者链表中只有一个结点
+
+如果链表中至少有两个节点，则在两两交换链表中的节点之后，原始链表的头节点变成新的链表的第二个节点，原始链表的第二个节点变成新的链表的头节点。链表中的其余节点的两两交换可以递归地实现。在对链表中的其余节点递归地两两交换之后，更新节点之间的指针关系，即可完成整个链表的两两交换。
+
+用 head 表示原始链表的头节点，新的链表的第二个节点，用 newHead 表示新的链表的头节点，原始链表的第二个节点，则原始链表中的其余节点的头节点是 newHead.next。令 head.next = swapPairs(newHead.next)，表示将其余节点进行两两交换，交换后的新的头节点为 head 的下一个节点。然后令 newHead.next = head，即完成了所有节点的交换。最后返回新的链表的头节点 newHead。
+
+复杂度分析
+
+时间复杂度：O(n) ，其中 n  是链表的节点数量。需要对每个节点进行更新指针的操作。
+
+空间复杂度：O(n) ，其中 n 是链表的节点数量。空间复杂度主要取决于递归调用的栈空间。
+
+#### Solution 2：迭代
+
+**复杂度分析**
+
+- 时间复杂度：O(n) ，其中 n  是链表的节点数量。需要对每个节点进行更新指针的操作。
+- 空间复杂度：O(1) 。
+
+## 445 链表求和
+
+445. Add Two Numbers II (Medium)
+
+[Leetcode](https://leetcode.com/problems/add-two-numbers-ii/description/) / [力扣](https://leetcode-cn.com/problems/add-two-numbers-ii/description/)
+
+#### Solution 1：栈
+
+遇到需要倒着求的要学会用栈！
+
+复杂度分析
+
+时间复杂度： O(max(m,n))，其中 m  和 n  分别为两个链表的长度。我们需要遍历两个链表的全部位置，而处理每个位置只需要 O(1) 的时间。
+
+空间复杂度：O(m + n) ，其中 m  和 n  分别为两个链表的长度。空间复杂度主要取决于我们把链表内容放入栈中所用的空间。
+
+#### Solution 2：反转
+
+对链表反转，相加，得到的结果再反转
+
+#### Solution 3：一次反转
+
+【我对solution 2的改进】对链表反转后，相加，结果采用头插入的方式添加
+
+## 234 回文链表
+
+234. Palindrome Linked List (Easy)
+
+[Leetcode](https://leetcode.com/problems/palindrome-linked-list/description/) / [力扣](https://leetcode-cn.com/problems/palindrome-linked-list/description/)
+
+#### Solution 1：翻转整个链表
+
+注意这里的翻转不能照搬`206`里面的代码，因为206里面的代码是在原链表上翻转，而我们需要创建一个新的链表进行比较。否则用之前的代码翻转完，原先的链表也会改变，无论是否是回文都会返回true。
+
+#### Solution 2：双指针
+
+利用`ArrayList`将链表的值存入list，然后利用双指针进行比较遍历。
+
+复杂度分析
+
+时间复杂度：O(n) ，其中 n  指的是链表的元素个数。
+第一步： 遍历链表并将值复制到数组中， O(n)。
+第二步：双指针判断是否为回文，执行了  O(n/2) 次的判断，即 O(n) 。
+总的时间复杂度：O(2n) = O(n) 。
+空间复杂度：O(n) ，其中 n  指的是链表的元素个数，我们使用了一个数组列表存放链表的元素值。
+
+#### Solution 3：递归
+
+#### Solution 4：快慢指针
+
+将链表的后半部分翻转，然后将前半部分和后半部分进行比较，比较完成后我们也应该将链表回复原样，因为使用该函数的人不希望链表结构被改变。
+
+使用快慢指针：慢指针一次走一步，快指针一次走2步，同时出发。当快指针移动到链表的末尾时，慢指针恰好到链表的中间。如果是奇数结点，也可以将中间的节点看做是前半部分。
+
+复杂度分析
+
+时间复杂度：O(n) ，其中 n  指的是链表的大小。
+
+空间复杂度：O(1) 。我们只会修改原本链表中节点的指向，而在堆栈上的堆栈帧不超过 O(1) 。
+
+ 【LeetCode-cn discuss】快慢指针在寻找中间结点的过程直接反正链表的前半部分
+
+## 725 分隔链表
+
+725. Split Linked List in Parts(Medium)
+
+[Leetcode](https://leetcode.com/problems/split-linked-list-in-parts/description/) / [力扣](https://leetcode-cn.com/problems/split-linked-list-in-parts/description/)
+
+#### Solution 1：mine
+
+分两种情况讨论：
+
+1 k >= len，那ListNode[]里面只能每个空放一个new ListNode(cur.val)， 然后index >= len 的部分直接空即可
+
+2 k < len
+
+这个时候为了保证任意两个部分差距不大于1，最好的情况就是每个格子放 `avg=len / k`个数，但是会有余数more, 这样的话，只要more > 0，每个格子就比avg多放1个，同时more--。
+
+至于怎么放格子，就需要一个start， 一个end，格子中放的是[start, end]， 然后下次开始数格子是从end.next开始。
+
+Runtime: 0 ms, faster than 100.00% of Java online submissions for Split Linked List in Parts.
+
+Memory Usage: 39.2 MB, less than 23.94% of Java online submissions for Split Linked List in Parts.
+
+#### Solution 2：Create New Lists
+
+思路和我一样，不过后面怎么将链表拆了放进格子的部分这里是通过建立新链表来实现的。
+
+**Complexity Analysis**
+
+- Time Complexity: O(N + k) , where N is the number of nodes in the given list. If k  is large, it could still require creating many new empty lists.
+- Space Complexity: O(max(N, k)) , the space used in writing the answer.
+
+#### Solution 3：Split Input List
+
+跟我的思路一模一样
+
+**Complexity Analysis**
+
+- Time Complexity: O(N + k) , where N  is the number of nodes in the given list. If k  is large, it could still require creating many new empty lists.
+- Space Complexity: O(k) , the additional space used in writing the answer.
+
+## 328 链表元素按奇偶聚集
+
+328. Odd Even Linked List (Medium)
+
+[Leetcode](https://leetcode.com/problems/odd-even-linked-list/description/) / [力扣](https://leetcode-cn.com/problems/odd-even-linked-list/description/)
+
+#### Solution 1：mine
+
+根据链表长度分成奇数、偶数分别讨论。详情见ipad笔记
+
+#### Solution 2：LeetCode
+
+![Illustration of odd even linked list](LeetCode.assets/328_Odd_Even.svg)
+
+用两个链表，两个头，分别形成奇数和偶数链，然后把偶数链的头连在奇数链后面。
+
+**Complexity Analysis**
+
+- Time complexity : O(n) . There are total n  nodes and we visit each node once.
+- Space complexity : O(1) . All we need is the four pointers.
+
+# 树
+
+一棵树要么是空树，要么有两个指针，每个指针指向一棵树。树是一种递归结构，很多树的问题可以使用递归来处理。
+
+### 104 树的高度
+
+104. Maximum Depth of Binary Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/maximum-depth-of-binary-tree/description/) / [力扣](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/description/)
+
+#### Solution 1：DFS
+
+其实就是递归，如果当前结点不为空，则返回1+Max(左子树高度，右子树高度)。
+
+递归结束：结点为空，返回0。
+
+复杂度分析
+
+时间复杂度： O(n)，其中 n 为二叉树节点的个数。每个节点在递归中只被遍历一次。
+
+空间复杂度： O(height)，其中 height 表示二叉树的高度。递归函数需要栈空间，而栈空间取决于递归的深度，因此空间复杂度等价于二叉树的高度。
+
+#### Solution 2：BFS
+
+我们也可以用「广度优先搜索」的方法来解决这道题目，但我们需要对其进行一些修改，此时我们广度优先搜索的队列里存放的是「当前层的所有节点」。每次拓展下一层的时候，不同于广度优先搜索的每次只从队列里拿出一个节点，我们需要将队列里的所有节点都拿出来进行拓展，这样能保证每次拓展完的时候队列里存放的是当前层的所有节点，即我们是一层一层地进行拓展，最后我们用一个变量  ans 来维护拓展的次数，该二叉树的最大深度即为 ans。
+
+ 复杂度分析
+
+时间复杂度：O(n) ，其中 n  为二叉树的节点个数。与方法一同样的分析，每个节点只会被访问一次。
+
+空间复杂度：此方法空间的消耗取决于队列存储的元素数量，其在最坏情况下会达到 O(n) 。
+
+ 【对比BFS和DFS， DFS在时间和空间上效率都明显优于BFS】
+
+### 110 平衡树
+
+110. Balanced Binary Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/balanced-binary-tree/description/) / [力扣](https://leetcode-cn.com/problems/balanced-binary-tree/description/)
+
+#### Solution 1：自顶向下
+
+有了计算节点高度的函数，即可判断二叉树是否平衡。具体做法类似于二叉树的前序遍历，即对于当前遍历到的节点，首先计算左右子树的高度，如果左右子树的高度差是否不超过 1，再分别递归地遍历左右子节点，并判断左子树和右子树是否平衡。这是一个自顶向下的递归的过程
+
+【这就是我用的方法】
+
+【评论区：重复计算很多次子树的高度，这样写是拿不到offer的。。】
+
+【实属扎心】
+
+复杂度分析
+
+时间复杂度：$O(n^2)$，其中 n是二叉树中的节点个数。
+最坏情况下，二叉树是满二叉树，需要遍历二叉树中的所有节点，时间复杂度是 O(n) 。
+对于节点 p ，如果它的高度是 d ，则  height(p) 最多会被调用 d  次（即遍历到它的每一个祖先节点时）。对于平均的情况，一棵树的高度 h  满足 O(h)= O(logn)，因为 $d \leq h$，所以总时间复杂度为 $O(n \log n)$。对于最坏的情况，二叉树形成链式结构，高度为 $O(n)$，此时总时间复杂度为$ O(n^2)$。
+
+空间复杂度：O(n) ，其中 n  是二叉树中的节点个数。空间复杂度主要取决于递归调用的层数，递归调用的层数不会超过 n 。
+
+####  Solution 2：自底向上
+
+自底向上递归的做法类似于后序遍历，对于当前遍历到的节点，先递归地判断其左右子树是否平衡，再判断以当前节点为根的子树是否平衡。如果一棵子树是平衡的，**则返回其高度（高度一定是非负整数），否则返回 -1** 。如果存在一棵子树不平衡，则整个二叉树一定不平衡。
+
+  复杂度分析
+
+时间复杂度：O(n) ，其中 n 是二叉树中的节点个数。使用自底向上的递归，每个节点的计算高度和判断是否平衡都只需要处理一次，最坏情况下需要遍历二叉树中的所有节点，因此时间复杂度是 O(n) 。
+
+空间复杂度：O(n) ，其中 n  是二叉树中的节点个数。空间复杂度主要取决于递归调用的层数，递归调用的层数不会超过 n 。
+
+ 
