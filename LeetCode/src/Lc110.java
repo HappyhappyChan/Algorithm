@@ -12,7 +12,7 @@ public class Lc110 {
         if(root == null)
             return true;
         //这个顺序就可100 60.50
-        return (Math.abs(maxDepth1(root.left) - maxDepth1(root.right)) < 2) && isBalanced(root.left)
+        return (Math.abs(maxDepth1(root.left) - maxDepth1(root.right)) < 2) && isBalanced1(root.left)
                 && isBalanced1(root.right);
         //下面这个顺序就15%左右
         /*return  isBalanced(root.left) && isBalanced(root.right) &&
