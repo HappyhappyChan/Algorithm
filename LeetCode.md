@@ -3563,6 +3563,8 @@ Memory Usage: 39.2 MB, less than 23.94% of Java online submissions for Split Lin
 
 # 树
 
+## 递归
+
 一棵树要么是空树，要么有两个指针，每个指针指向一棵树。树是一种递归结构，很多树的问题可以使用递归来处理。
 
 ### 104 树的高度
@@ -3629,4 +3631,694 @@ Memory Usage: 39.2 MB, less than 23.94% of Java online submissions for Split Lin
 
 空间复杂度：O(n) ，其中 n  是二叉树中的节点个数。空间复杂度主要取决于递归调用的层数，递归调用的层数不会超过 n 。
 
- 
+### 543 两节点的最长路径
+
+543. Diameter of Binary Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/diameter-of-binary-tree/description/) / [力扣](https://leetcode-cn.com/problems/diameter-of-binary-tree/description/)
+
+#### Solution 1：mine
+
+自底向上，左子树高度+右子树高度，取max即为答案。
+
+### 226 翻转树
+
+226. Invert Binary Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/invert-binary-tree/description/) / [力扣](https://leetcode-cn.com/problems/invert-binary-tree/description/)
+
+因为后面会改变`root.left`，所以要记得先把`root.left`保留
+
+### 617 归并两棵树
+
+617. Merge Two Binary Trees (Easy)
+
+[Leetcode](https://leetcode.com/problems/merge-two-binary-trees/description/) / [力扣](https://leetcode-cn.com/problems/merge-two-binary-trees/description/)
+
+#### Solution 1：递归
+
+**Complexity Analysis**
+
+- Time complexity : O(m) . A total of m*m* nodes need to be traversed. Here, m*m* represents the minimum number of nodes from the two given trees.
+- Space complexity : O(m) . The depth of the recursion tree can go upto m*m* in the case of a skewed tree. In average case, depth will be O(logm) .
+
+#### Solution 2：Iterative
+
+**Complexity Analysis**
+
+- Time complexity : O(n) . We traverse over a total of n  nodes. Here, n  refers to the smaller of the number of nodes in the two trees.
+- Space complexity : O(n) . The depth of stack can grow upto n  in case of a skewed tree.
+
+#### Solution 3：BFS
+
+【这和我一开始想的一样，可惜我代码都是bug】
+
+使用三个队列分别存储合并后的二叉树的节点以及两个原始二叉树的节点。初始时将每个二叉树的根节点分别加入相应的队列。每次从每个队列中取出一个节点，判断两个原始二叉树的节点的左右子节点是否为空。如果两个原始二叉树的当前节点中至少有一个节点的左子节点不为空，则合并后的二叉树的对应节点的左子节点也不为空。对于右子节点同理。
+
+如果合并后的二叉树的左子节点不为空，则需要根据两个原始二叉树的左子节点计算合并后的二叉树的左子节点以及整个左子树。考虑以下两种情况：
+
+如果两个原始二叉树的左子节点都不为空，则合并后的二叉树的左子节点的值为两个原始二叉树的左子节点的值之和，在创建合并后的二叉树的左子节点之后，将每个二叉树中的左子节点都加入相应的队列；
+
+如果两个原始二叉树的左子节点有一个为空，即有一个原始二叉树的左子树为空，则合并后的二叉树的左子树即为另一个原始二叉树的左子树，此时也不需要对非空左子树继续遍历，因此不需要将左子节点加入队列。
+
+> - ti 为空，t2 为空：返回空
+> - ti 为空，t2 不为空：将 t2 直接嫁接到父结点，此时没必要知道 t2 有多少分支了。
+
+对于右子节点和右子树，处理方法与左子节点和左子树相同。
+
+ 复杂度分析
+
+时间复杂度：$O(\min(m,n))$，其中 m 和  n 分别是两个二叉树的节点个数。对两个二叉树同时进行广度优先搜索，只有当两个二叉树中的对应节点都不为空时才会访问到该节点，因此被访问到的节点数不会超过较小的二叉树的节点数。
+
+空间复杂度：$O(min(m,n))$，其中 m  和 n  分别是两个二叉树的节点个数。空间复杂度取决于队列中的元素个数，队列中的元素个数不会超过较小的二叉树的节点数。
+
+### 112 判断路径和是否等于一个数
+
+112. Path Sum (Easy)
+
+[Leetcode](https://leetcode.com/problems/path-sum/description/) / [力扣](https://leetcode-cn.com/problems/path-sum/description/)
+
+#### Solution 1：递归求解
+
+复杂度分析
+
+时间复杂度：O(N) ，其中 N  是树的节点数。对每个节点访问一次。
+
+空间复杂度：O(H) ，其中 H  是树的高度。空间复杂度主要取决于递归时栈空间的开销，最坏情况下，树呈现链状，空间复杂度为  O(N)。平均情况下树的高度与节点数的对数正相关，空间复杂度为  O(logN)。
+
+####  Solution 2：BFS
+
+首先我们可以想到使用广度优先搜索的方式，记录从根节点到当前节点的路径和，以防止重复计算。
+
+这样我们使用两个队列，分别存储将要遍历的节点，以及根节点到这些节点的路径和即可。
+
+ 复杂度分析
+
+时间复杂度：O(N) ，其中 N  是树的节点数。对每个节点访问一次。
+
+空间复杂度：O(N) ，其中 N  是树的节点数。空间复杂度主要取决于队列的开销，队列中的元素个数不会超过树的节点数。 
+
+### 437 统计路径和等于一个数的路径数量
+
+437. Path Sum III (Easy)
+
+[Leetcode](https://leetcode.com/problems/path-sum-iii/description/) / [力扣](https://leetcode-cn.com/problems/path-sum-iii/description/)
+
+#### Solution 1：DFS
+
+我们首先想到的解法是穷举所有的可能，我们访问每一个节点  node，检测以  node 为起始节点且向下延深的路径有多少种。我们递归遍历每一个节点的所有可能的路径，然后将这些路径数目加起来即为返回结果。
+
+我们首先定义 rootSum(p,val) 表示以节点 p  为起点向下且满足路径总和为 val  的路径数目。我们对二叉树上每个节点 p  求出 rootSum(p,targetSum)，然后对这些路径数目求和即为返回结果。
+
+我们对节点 p  求 rootSum(p,targetSum) 时，以当前节点 p  为目标路径的起点递归向下进行搜索。假设当前的节点 p  的值为  val，我们对左子树和右子树进行递归搜索，对节点 p  的左孩子节点 $p_{l}$求出 $\textit{rootSum}(p_{l},\textit{targetSum}-\textit{val})$，以及对右孩子节点 $p_{r}$求出$ \textit{rootSum}(p_{r},\textit{targetSum}-\textit{val})$。节点  p 的 $\textit{rootSum}(p,\textit{targetSum})$即等于 $\textit{rootSum}(p_{l},\textit{targetSum}-\textit{val})$与 $\textit{rootSum}(p_{r},\textit{targetSum}-\textit{val})$之和，同时我们还需要判断一下当前节点 p  的值是否刚好等于  targetSum。
+
+我们采用递归遍历二叉树的每个节点  p，对节点  p 求  rootSum(p,val)，然后将每个节点所有求的值进行相加求和返回。
+
+ 复杂度分析
+
+时间复杂度：$O(N^2)$  ，其中  N 为该二叉树节点的个数。对于每一个节点，求以该节点为起点的路径数目时，则需要遍历以该节点为根节点的子树的所有节点，因此求该路径所花费的最大时间为  O(N)，我们会对每个节点都求一次以该节点为起点的路径数目，因此时间复杂度为 $O(N^{2}) $。
+
+空间复杂度：O(N) ，考虑到递归需要在栈上开辟空间。
+
+####  Solution 2：前缀和
+
+>在「解法一」中，我们统计的是以每个节点为根的（往下的）所有路径，也就是说统计的是以每个节点为「路径开头」的所有合法路径。
+>
+>本题的一个优化切入点为「路径只能往下」，因此如果我们转换一下，统计以每个节点为「路径结尾」的合法数量的话，配合原本就是「从上往下」进行的数的遍历（最完整的路径必然是从原始根节点到当前节点的唯一路径），相当于只需要在完整路径中找到有多少个节点到当前节点的路径总和为targetSum.
+>
+>于是这个树上问题彻底转换一维问题：求解从原始起点（根节点）到当前节点 b  的路径中，有多少节点 a  满足 sum[a...b]=targetSum，由于从原始起点（根节点）到当前节点的路径唯一，因此这其实是一个「一维前缀和」问题。
+>
+>一些细节：由于我们只能统计往下的路径，但是树的遍历会同时搜索两个方向的子树。因此我们应当在搜索完以某个节点为根的左右子树之后，应当回溯地将路径总和从哈希表中删除，防止统计到跨越两个方向的路径。
+
+我们仔细思考一下，解法一中应该存在许多重复计算。我们定义节点的前缀和为：由根结点到当前结点的路径上所有节点的和。我们利用先序遍历二叉树，记录下根节点  root 到当前节点  p 的路径上除当前节点以外所有节点的前缀和，在已保存的路径前缀和中查找是否存在前缀和刚好等于当前节点到根节点的前缀和 curr  减去 targetSum。
+
+ 对于空路径我们也需要保存预先处理一下，此时因为空路径不经过任何节点，因此它的前缀和为  0。
+
+假设根节点为  root，我们当前刚好访问节点  node，则此时从根节点 root 到节点 node 的路径（无重复节点）刚好为 $\textit{root} \rightarrow p_1 \rightarrow p_2 \rightarrow \ldots \rightarrow p_k \rightarrow \textit{node}$ ，此时我们可以已经保存了节点 $p_1, p_2, p_3, \ldots, p_k$的前缀和，并且计算出了节点  node 的前缀和。
+
+假设当前从根节点  root 到节点  node 的前缀和为  curr，则此时我们在已保存的前缀和查找是否存在前缀和刚好等于 $\textit{curr} - \textit{targetSum}$。假设从根节点  root 到节点  node 的路径中存在节点 $p_i$ 到根节点  root 的前缀和为  curr−targetSum，则节点 $p_{i+1}$到  node 的路径上所有节点的和一定为  targetSum。
+
+我们利用深度搜索遍历树，当我们退出当前节点时，我们需要及时更新已经保存的前缀和。
+
+**复杂度分析**
+
+- 时间复杂度：O(N) ，其中 N  为二叉树中节点的个数。利用前缀和只需遍历一次二叉树即可。
+- 空间复杂度：O(N) 。
+
+### 572 子树
+
+572. Subtree of Another Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/subtree-of-another-tree/description/) / [力扣](https://leetcode-cn.com/problems/subtree-of-another-tree/description/)
+
+#### Solution 1：深度优先搜索暴力匹配
+
+这是一种最朴素的方法——深度优先搜索枚举  s 中的每一个节点，判断这个点的子树是否和 t 相等。如何判断一个节点的子树是否和  t 相等呢，我们又需要做一次深度优先搜索来检查，即让两个指针一开始先指向该节点和 t  的根，然后「同步移动」两根指针来「同步遍历」这两棵树，判断对应位置是否相等。
+
+ 复杂度分析
+
+时间复杂度：对于每一个 s 上的点，都需要做一次深度优先搜索来和 t  匹配，匹配一次的时间代价是 $O(|t|)$，那么总的时间代价就是 $O(|s| \times |t|)$。故渐进时间复杂度为 $O(|s| \times |t|)$。
+空间复杂度：假设 s  深度为 $d_s$，t  的深度为$ d_t$，任意时刻栈空间的最大使用代价是 $O(\max \{ d_s, d_t \})$。故渐进空间复杂度为 $O(\max \{ d_s, d_t \})$
+
+####  Solution 2：深度优先搜索序列上做串匹配KMP
+
+这个方法需要我们先了解一个「小套路」：一棵子树上的点在深度优先搜索序列（即先序遍历）中是连续的。了解了这个「小套路」之后，我们可以确定解决这个问题的方向就是：把 s  和 t  先转换成深度优先搜索序列，然后看 t  的深度优先搜索序列是否是 s  的深度优先搜索序列的「子串」。
+
+ 这样做正确吗？ 假设 s  由两个点组成，1 是根，2是 1 的左孩子；t  也由两个点组成，1  是根，2  是 1  的右孩子。这样一来 s  和 t  的深度优先搜索序列相同，可是  t 并不是 s  的某一棵子树。由此可见「s  的深度优先搜索序列包含 t  的深度优先搜索序列」是「t  是 s  子树」的必要不充分条件，所以单纯这样做是不正确的。
+
+为了解决这个问题，我们可以引入两个空值 lNull 和 rNull，当一个节点的左孩子或者右孩子为空的时候，就插入这两个空值，这样深度优先搜索序列就唯一对应一棵树。处理完之后，就可以通过判断「 s 的深度优先搜索序列包含  t 的深度优先搜索序列」来判断答案。
+
+ 在判断「s  的深度优先搜索序列包含 t  的深度优先搜索序列」的时候，可以暴力匹配，也可以使用$ \text{KMP}$ 或者 $\text{Rabin-Karp}$ 算法，在使用 $\text{Rabin-Karp}$算法的时候，要注意串中可能有负值。
+
+复杂度分析
+
+时间复杂度：遍历两棵树得到深度优先搜索序列的时间代价是  O(∣s∣+∣t∣)，在匹配的时候，如果使用暴力匹配，时间代价为 $O(|s| \times |t|)$，使用 $\text{KMP}KMP$ 或 $\text{Rabin-Karp}$ 进行串匹配的时间代价都是 $O(|s| + |t|)$。由于这里的代码使用 $\text{KMP}$ 实现的，所以渐进时间复杂度为 $O(|s| + |t|)$。
+空间复杂度：这里保存了两个深度优先搜索序列，还计算了  ∣t∣ 长度的 fail 数组，辅助空间的总代价为 $O(|s| + |t|)$，任意时刻栈空间的最大使用代价是 $O(\max \{ d_s, d_t \})$，由于 $\max \{ d_s, d_t \} = O(|s| + |t|)$，故渐进空间复杂度为$O(|s| + |t|)$。
+
+#### KMP
+
+[Youtube][https://www.youtube.com/watch?v=BXCEFAzhxGY]
+
+#### Solution 3：HashMap
+
+【没细看】
+
+考虑把每个子树都映射成一个唯一的数，如果 t  对应的数字和 s  中任意一个子树映射的数字相等，则 t  是 s  的某一棵子树。如何映射呢？我们可以定义这样的哈希函数：
+
+$$
+f_{o}=v_{o}+31 \cdot f_{l} \cdot p\left(s_{l}\right)+179 \cdot f_{r} \cdot p\left(s_{r}\right)
+$$
+这里 $f_x$  表示节点  x 的哈希值，$s_x $表示节点 x  对应的子树大小，$v_x$ 代表节点 x  的 val，p(n)  表示第 n  个素数，o  表示当前节点，l  和 r 分别表示左右孩子。这个式子的意思是：当前节点 o  的哈希值等于这个点的 val 加上 31 倍左子树的哈希值乘以第 $s_l $个素数，再加上 179  倍右子树的哈希值乘以第 $s_r$个素数。这里的  31 和 179  这两个数字只是为了区分左右子树，你可以自己选择你喜欢的权值。
+
+ 这样做为什么可行呢？ 回到我们的初衷，我们希望把每个子树都映射成一个唯一的数，这样真的能够确保唯一吗？实际上未必。但是我们在这个哈希函数中考虑到每个点的 val、子树哈希值、子树大小以及左右子树的不同权值，所以这些因素共同影响一个点的哈希值，所以出现冲突的几率较小，一般我们可以忽略。当然你也可以设计你自己的哈希函数，只要考虑到这些因素，就可以把冲突的可能性设计得比较小。可是如果还是出现了冲突怎么办呢？ 我们可以设计两个哈希函数`f1`,`f2`, 用这两个哈希函数生成第三个哈希函数，比如 $f = f_1 + f_2$、$f = f_1 \times f_2$等等，这样可以进一步缩小冲突，如果 f_1  的冲突概率是 P_1 ，f_2  的冲突概率是 P_2 ，那么 f 的冲突概率就是 $P_1 \times P_2$，理论上已经非常小了，这就是「双哈希」。当然，为了减少冲突，你也可以设计「三哈希」、「四哈希」等，可是这样编程的复杂度就会增加。实际上，一般情况下，只要运气不是太差，一个哈希函数就足够了。
+
+ 我们可以用「埃氏筛法」或者「欧拉筛法」求出前 $\arg \pi (\max \{ |s|, |t| \})$ 个素数（其中$ \pi (x)$ 表示 x  以内素数个数，$\arg \pi (x)$为它的反函数，表示有多少以内包含 x  个素数，这个映射是不唯一的，我们取最小值），然后深度优先搜索计算哈希值，最后比较 s  的所有子树是否有和 t 相同的哈希值即可
+
+ 复杂度分析
+
+时间复杂度：筛选素数（此处为欧拉筛）的时间代价是 $O(\arg \pi (\max \{ |s|, |t| \}))$，对于 $10^6$以下的 x ，一般有 $\arg \pi (x) < 15 x$，也就是在$ 15 x$ 个自然数里一定能找到 x 个素数，所以这里可以认为它比线性稍微慢一点。深度优先搜索求解和循环比较的时间代价是 $O(|s| + |t|)$。故渐进时间复杂度为 $O(\arg \pi (\max \{ |s|, |t| \}) + |s| + |t|) = O(\arg \pi (\max \{ |s|, |t| \}))$。
+空间复杂度：这里用了哈希表来记录每个点的哈希值和子树大小，空间代价是 $O(|s| + |t|)$，筛选素数的 vis 数组的空间代价为 $O(\arg \pi (\max \{ |s|, |t| \}))$，任意时刻栈空间的最大使用代价是 $O(\max \{ d_s, d_t \})$，故渐进空间复杂度为 $O(\arg \pi (\max \{ |s|, |t| \}))$。
+
+### 101 树的对称
+
+101. Symmetric Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/symmetric-tree/description/) / [力扣](https://leetcode-cn.com/problems/symmetric-tree/description/)
+
+#### Solution 1：递归
+
+同时满足下面条件，两个树互为镜像：
+
+1 两个根结点都具有相同的值
+
+2 每个树的右子树与另一个树的左子树镜像对称
+
+3 每个树的左子树和另一个树的右子树镜像对称
+
+复杂度分析
+
+假设树上一共 nn 个节点。
+
+时间复杂度：这里遍历了这棵树，渐进时间复杂度为 O(n) 。
+空间复杂度：这里的空间复杂度和递归使用的栈空间有关，这里递归层数不超过 n ，故渐进空间复杂度为 O(n) 。
+
+####  Solution 2：迭代
+
+方法一」中我们用递归的方法实现了对称性的判断，那么如何用迭代的方法实现呢？首先我们引入一个队列，这是把递归程序改写成迭代程序的常用方法。初始化时我们把根节点入队两次。每次提取两个结点并比较它们的值（队列中每两个连续的结点应该是相等的，而且它们的子树互为镜像），然后将两个结点的左右子结点按相反的顺序插入队列中。当队列为空时，或者我们检测到树不对称（即从队列中取出两个不相等的连续结点）时，该算法结束
+
+ 复杂度分析
+
+时间复杂度：O(n) ，同「方法一」。
+空间复杂度：这里需要用一个队列来维护节点，每个节点最多进队一次，出队一次，队列中最多不会超过 n 个点，故渐进空间复杂度为 O(n) 。
+
+### 111 最小路径
+
+111. Minimum Depth of Binary Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/minimum-depth-of-binary-tree/description/) / [力扣](https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/description/)
+
+#### Solution 1：DFS递归
+
+复杂度分析
+
+时间复杂度：O(N) ，其中 N  是树的节点数。对每个节点访问一次。
+
+空间复杂度：O(H) ，其中 H  是树的高度。空间复杂度主要取决于递归时栈空间的开销，最坏情况下，树呈现链状，空间复杂度为 O(N) 。平均情况下树的高度与节点数的对数正相关，空间复杂度为  O(logN)。
+
+####  Solution 2：BFS迭代
+
+同样，我们可以想到使用广度优先搜索的方法，遍历整棵树。
+
+当我们找到一个叶子节点时，直接返回这个叶子节点的深度。广度优先搜索的性质保证了最先搜索到的叶子节点的深度一定最小。
+
+复杂度分析
+
+时间复杂度：O(N) ，其中 N  是树的节点数。对每个节点访问一次。
+
+空间复杂度：O(N) ，其中 N  是树的节点数。空间复杂度主要取决于队列的开销，队列中的元素个数不会超过树的节点数。
+
+### 404 统计左叶子节点的和
+
+404. Sum of Left Leaves (Easy)
+
+[Leetcode](https://leetcode.com/problems/sum-of-left-leaves/description/) / [力扣](https://leetcode-cn.com/problems/sum-of-left-leaves/description/)
+
+#### Solution 1：DFS
+
+一个节点为「左叶子」节点，当且仅当它是某个节点的左子节点，并且它是一个叶子结点。因此我们可以考虑对整棵树进行遍历，当我们遍历到节点  node 时，如果它的左子节点是一个叶子结点，那么就将它的左子节点的值累加计入答案。
+
+ 复杂度分析
+
+时间复杂度：O(n) ，其中 n  是树中的节点个数。
+
+空间复杂度：O(n) 。空间复杂度与深度优先搜索使用的栈的最大深度相关。在最坏的情况下，树呈现链式结构，深度为 O(n) ，对应的空间复杂度也为 O(n)。
+
+####  Solution 2：BFS
+
+广度优先就是用Queue遍历
+
+复杂度分析
+
+时间复杂度：O(n) ，其中 n  是树中的节点个数。
+
+空间复杂度：O(n) 。空间复杂度与广度优先搜索使用的队列需要的容量相关，为 O(n) 。
+
+### 687 相同节点值的最大路径长度
+
+687. Longest Univalue Path (Easy)
+
+[Leetcode](https://leetcode.com/problems/longest-univalue-path/) / [力扣](https://leetcode-cn.com/problems/longest-univalue-path/)
+
+#### Solution 1：递归
+
+**Intuition**
+
+We can think of any path (of nodes with the same values) as up to two arrows extending from it's root.
+
+Specifically, the *root* of a path will be the unique node such that the parent of that node does not appear in the path, and an *arrow* will be a path where the root only has one child node in the path.
+
+Then, for each node, we want to know what is the longest possible arrow extending left, and the longest possible arrow extending right? We can solve this using recursion.
+
+**Algorithm**
+
+Let `arrow_length(node)` be the length of the longest arrow that extends from the `node`. That will be `1 + arrow_length(node.left)` if `node.left` exists and has the same value as `node`. Similarly for the `node.right` case.
+
+While we are computing arrow lengths, each candidate answer will be the sum of the arrows in both directions from that node. We record these candidate answers and return the best one.
+
+- Time Complexity: O(N) , where N is the number of nodes in the tree. We process every node once.
+- Space Complexity: O(H) , where H  is the height of the tree. Our recursive call stack could be up to H layers deep.
+
+### 337 间隔遍历
+
+337. House Robber III (Medium)
+
+[Leetcode](https://leetcode.com/problems/house-robber-iii/description/) / [力扣](https://leetcode-cn.com/problems/house-robber-iii/description/)
+
+#### Solution 1：递归
+
+我自己想出来的，
+
+case 1: 偷root
+
+case1 = root.val + rob(root.left.left) + rob(root.left.right) + rob(root.right.left) + rob(root.right.right);
+
+case 2: 不偷root
+
+case2 = rob(root.left) + rob(root.right);
+
+返回的结果：
+
+Math.max(case1, case2)
+
+但是会TLE
+
+#### Solution 2：递归+记忆化
+
+在计算case2的时候，对于rob(root.left)， 如果不偷root.left, 则rob(root.left.left) + rob(root.left.right) 。这样就会发现在第一次递归就已经计算过了，现在又要计算一次。
+
+这个时候就需要记忆化。斐波那契数列是用数组来记忆，而二叉树不适合拿数组当缓存，所以要用HashMap来存储结果，TreeNode当做key，偷的钱当做value。
+
+#### Solution 3：动态规划
+
+简化一下这个问题：一棵二叉树，树上的每个点都有对应的权值，每个点有两种状态（选中和不选中），问在不能同时选中有父子关系的点的情况下，能选中的点的最大权值和是多少。
+
+我们可以用 $f(o)$表示选择  o 节点的情况下，o  节点的子树上被选择的节点的最大权值和；g(o) 表示不选择  o 节点的情况下，o  节点的子树上被选择的节点的最大权值和；l  和 r  代表 o  的左右孩子。
+
+当 o  被选中时，o  的左右孩子都不能被选中，故  o 被选中情况下子树上被选中点的最大权值和为 l  和 r  不被选中的最大权值和相加，即 f(o) = g(l) + g(r) 。
+当 o  不被选中时，o  的左右孩子可以被选中，也可以不被选中。对于 o  的某个具体的孩子 x ，它对 o  的贡献是 x  被选中和不被选中情况下权值和的较大值。故  g(o)=max{f(l),g(l)}+max{f(r),g(r)}。
+
+ 至此，我们可以用哈希表来存  f 和  g 的函数值，用深度优先搜索的办法后序遍历这棵二叉树，我们就可以得到每一个节点的 f  和 g 。根节点的 f  和 g 的最大值就是我们要找的答案。
+
+ 假设二叉树的节点个数为  n。
+
+我们可以看出，以上的算法对二叉树做了一次后序遍历，时间复杂度是 O(n) ；由于递归会使用到栈空间，空间代价是 O(n) ，哈希表的空间代价也是 O(n)，故空间复杂度也是 O(n)。
+
+我们可以做一个小小的优化，我们发现无论是 f(o) 还是 g(o) ，他们最终的值只和  f(l)、 g(l)、 f(r)、 g(r) 有关，所以对于每个节点，我们只关心它的孩子节点们的 f 和 g  是多少。我们可以设计一个结构，表示某个节点的 f 和 g  值，在每次递归返回的时候，都把这个点对应的 f 和 g  返回给上一级调用，这样可以省去哈希表的空间。
+
+复杂度分析
+
+时间复杂度：O(n) 。上文中已分析。
+
+空间复杂度：O(n) 。虽然优化过的版本省去了哈希表的空间，但是栈空间的使用代价依旧是  O(n)，故空间复杂度不变。
+
+### 671 找出二叉树中第二小的节点
+
+671. Second Minimum Node In a Binary Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/second-minimum-node-in-a-binary-tree/description/) / [力扣](https://leetcode-cn.com/problems/second-minimum-node-in-a-binary-tree/description/)
+
+#### Solution 1：Brute Force
+
+学会用
+
+```java
+long a = Long.MAX_VALUE;
+```
+
+**Complexity Analysis**
+
+- Time Complexity: O(N)  where N  is the total number of nodes in the given tree. We visit each node exactly once, and scan through the  O*(*N ) values in `unique` once.
+- Space Complexity: O(N)  the information stored in `uniques`.
+
+#### Solution 2：Ad-Hoc
+
+Ad-Hoc means "Specific and tricky approach"
+
+【仔细看题目描述】【给定一个非空特殊的二叉树，每个节点都是正数，并且每个节点的子节点数量只能为 2 或 0。如果一个节点有两个子节点的话，那么该节点的值等于两个子节点中较小的一个。】
+
+> root 一定是最小的，即`min1 = root.val`。不可能存在结点 < min1;
+>
+> 如果结点 > min1 && cur.val < min2, 则min2 = cur.val。
+>
+> 如果结点 == min1, 那该结点的左结点或右节点就有可能 < min2. 
+>
+> 如果结点 > min2，则不用理，继续遍历
+
+Let min1 = root.val. When traversing the tree at some node, node, if $\text{node.val > min1}$, we know all values in the subtree at $node$ are at least $\text{node.val}$, so there cannot be a better candidate for the second minimum in this subtree. Thus, we do not need to search this subtree.
+
+Also, as we only care about the second minimum $\text{ans}$, we do not need to record any values that are larger than our current candidate for the second minimum, so unlike Approach #1 we can skip maintaining a Set of values(`uniques`) entirely.
+
+**Complexity Analysis**
+
+- Time Complexity: O(N) , where N  is the total number of nodes in the given tree. We visit each node at most once.
+- Space Complexity: O(N) . The information stored in $\text{ans}$ and $\text{min1}$ is O(1) , but our depth-first search may store up to O(h) = O(N) information in the call stack, where h   is the height of the tree.
+
+## 层次遍历
+
+使用 BFS 进行层次遍历。不需要使用两个队列来分别存储当前层的节点和下一层的节点，因为在开始遍历一层的节点时，当前队列中的节点数就是当前层的节点数，只要控制遍历这么多节点数，就能保证这次遍历的都是当前层的节点。
+
+### 637 一棵树每层节点的平均数
+
+637. Average of Levels in Binary Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/average-of-levels-in-binary-tree/description/) / [力扣](https://leetcode-cn.com/problems/average-of-levels-in-binary-tree/description/)
+
+#### Solution 1：Depth First Search
+
+To make use of DFS to solve the given problem, we make use of two lists count and res  . Here, count[i]  refers to the total number of nodes found at the $i^{th}$ level(counting from root at level 0) till now, and res[i]  refers to the sum of the nodes at the $i^{th}$ level encountered till now during the Depth First Search.
+
+We make use of a function `average(t, i, res, count)`, which is used to fill the res and count  array if we start the DFS from the node t  at the $i^{th}$ level in the given tree. We start by making the function call `average(root, 0, res, count)`.
+
+**Complexity Analysis**
+
+- Time complexity : O(n) . The whole tree is traversed once only. Here, n  refers to the total number of nodes in the given binary tree.
+- Space complexity : O(h) . res  and count  array of size h  are used. Here, h  refers to the height(maximum number of levels) of the given binary tree. Further, the depth of the recursive tree could go upto h  only.
+
+#### Solution 2：Breadth First Search
+
+这个看我的代码就ok
+
+**Complexity Analysis**
+
+- Time complexity : O(n) . The whole tree is traversed atmost once. Here, n  refers to the number of nodes in the given binary tree.
+- Space complexity : O(m) . The size of queue can grow upto atmost the maximum number of nodes at any level in the given binary tree. Here, m*m* refers to the maximum number of nodes at any level in the input tree.
+
+### 513 得到左下角的节点
+
+513. Find Bottom Left Tree Value (Easy)
+
+[Leetcode](https://leetcode.com/problems/find-bottom-left-tree-value/description/) / [力扣](https://leetcode-cn.com/problems/find-bottom-left-tree-value/description/)
+
+看代码，尤其是github的方法，很绝！
+
+## 前中后序遍历
+
+```
+    1
+   / \
+  2   3
+ / \   \
+4   5   6
+```
+
+- 层次遍历顺序：[1 2 3 4 5 6]
+- 前序遍历顺序：[1 2 4 5 3 6]
+- 中序遍历顺序：[4 2 5 1 3 6]
+- 后序遍历顺序：[4 5 2 6 3 1]
+
+层次遍历使用 BFS 实现，利用的就是 BFS 一层一层遍历的特性；而前序、中序、后序遍历利用了 DFS 实现。
+
+前序、中序、后序遍只是在对节点访问的顺序有一点不同，其它都相同。
+
+① 前序
+
+```java
+void dfs(TreeNode root) {
+    visit(root);
+    dfs(root.left);
+    dfs(root.right);
+}
+```
+
+② 中序
+
+```java
+void dfs(TreeNode root) {
+    dfs(root.left);
+    visit(root);
+    dfs(root.right);
+}
+```
+
+③ 后序
+
+```java
+void dfs(TreeNode root) {
+    dfs(root.left);
+    dfs(root.right);
+    visit(root);
+}
+```
+
+### 144 非递归实现二叉树的前序遍历
+
+144. Binary Tree Preorder Traversal (Medium)
+
+[Leetcode](https://leetcode.com/problems/binary-tree-preorder-traversal/description/) / [力扣](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/description/)
+
+#### Solution 1：递归
+
+复杂度分析
+
+时间复杂度：O(n) ，其中 n  是二叉树的节点数。每一个节点恰好被遍历一次。
+
+空间复杂度：O(n) ，为递归过程中栈的开销，平均情况下为  O(logn)，最坏情况下树呈现链状，为 O(n) 。
+
+#### Solution 2：非递归
+
+```java
+public List<Integer> preorderTraversal(TreeNode root) {
+    List<Integer> ret = new ArrayList<>();
+    Stack<TreeNode> stack = new Stack<>();
+    stack.push(root);
+    while (!stack.isEmpty()) {
+        TreeNode node = stack.pop();
+        if (node == null) continue;
+        ret.add(node.val);
+        stack.push(node.right);  // 先右后左，保证左子树先遍历
+        stack.push(node.left);
+    }
+    return ret;
+}
+```
+
+复杂度分析
+
+时间复杂度：O(n) ，其中 n  是二叉树的节点数。每一个节点恰好被遍历一次。
+
+空间复杂度：O(n) ，为迭代过程中显式栈的开销，平均情况下为  O(logn)，最坏情况下树呈现链状，为 O(n) 。
+
+#### Solution 3：Mirros遍历
+
+【2021-11-09没仔细看】
+
+有一种巧妙的方法可以在线性时间内，只占用常数空间来实现前序遍历。这种方法由 J. H. Morris 在 1979 年的论文「Traversing Binary Trees Simply and Cheaply」中首次提出，因此被称为 Morris 遍历。
+
+Morris 遍历的核心思想是利用树的大量空闲指针，实现空间开销的极限缩减。其前序遍历规则总结如下：
+
+1. 新建临时节点，令该节点为 root；
+2. 如果当前节点的左子节点为空，将当前节点加入答案，并遍历当前节点的右子节点；
+3. 如果当前节点的左子节点不为空，在当前节点的左子树中找到当前节点在中序遍历下的前驱节点：
+   1. 如果前驱节点的右子节点为空，将前驱节点的右子节点设置为当前节点。然后将当前节点加入答案，并将前驱节点的右子节点更新为当前节点。当前节点更新为当前节点的左子节点。
+   2. 如果前驱节点的右子节点为当前节点，将它的右子节点重新设为空。当前节点更新为当前节点的右子节点。
+
+4. 重复步骤 2 和步骤 3，直到遍历结束。
+
+这样我们利用 Morris 遍历的方法，前序遍历该二叉树，即可实现线性时间与常数空间的遍历
+
+复杂度分析
+
+时间复杂度：O(n) ，其中 n  是二叉树的节点数。没有左子树的节点只被访问一次，有左子树的节点被访问两次。
+
+空间复杂度：O(1) 。只操作已经存在的指针（树的空闲指针），因此只需要常数的额外空间。
+
+### 145  非递归实现二叉树的后序遍历
+
+145. Binary Tree Postorder Traversal (Medium)
+
+[Leetcode](https://leetcode.com/problems/binary-tree-postorder-traversal/description/) / [力扣](https://leetcode-cn.com/problems/binary-tree-postorder-traversal/description/)
+
+前序遍历为 root -> left -> right，后序遍历为 left -> right -> root。可以修改前序遍历成为 root -> right -> left，那么这个顺序就和后序遍历正好相反。
+
+```java
+public List<Integer> postorderTraversal(TreeNode root) {
+    List<Integer> ret = new ArrayList<>();
+    Stack<TreeNode> stack = new Stack<>();
+    stack.push(root);
+    while (!stack.isEmpty()) {
+        TreeNode node = stack.pop();
+        if (node == null) continue;
+        ret.add(node.val);
+        stack.push(node.left);
+        stack.push(node.right);
+    }
+    Collections.reverse(ret);
+    return ret;
+}
+
+```
+
+
+
+### 94 非递归实现二叉树的中序遍历
+
+94. Binary Tree Inorder Traversal (Medium)
+
+[Leetcode](https://leetcode.com/problems/binary-tree-inorder-traversal/description/) / [力扣](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/description/)
+
+#### Solution 1：递归
+
+**Complexity Analysis**
+
+Time complexity: O(n) 
+
+- The time complexity is O(n)  because the recursive function is $T(n) = 2 \cdot T(n/2)+1$.
+
+Space complexity: O(n) 
+
+- The worst case space required is O(n)  and in the average case it's $O(\log n)$ where n  is number of nodes.
+
+#### Solution 2：非递归
+
+```java
+public List<Integer> inorderTraversal2(TreeNode root) {
+    List<Integer> ret = new ArrayList<>();
+    if(root == null)
+        return ret;
+    Stack<TreeNode> s = new Stack<>();
+    TreeNode cur = root;
+    while(cur != null || !s.isEmpty()){
+        while(cur != null){
+            s.push(cur);
+            cur = cur.left;
+        }
+        cur = s.pop();
+        ret.add(cur.val);
+        cur = cur.right;
+    }
+    return ret;
+}
+```
+
+**Complexity Analysis**
+
+Time complexity: O(n) 
+
+Space complexity: O(n) 
+
+#### Solution 3： Morris Traversal
+
+In this method, we have to use a new data structure-Threaded Binary Tree, and the strategy is as follows:
+
+> Step 1: Initialize current as root
+>
+> Step 2: While current is not NULL,
+>
+> ```
+> If current does not have left child
+> 
+>     a. Add current’s value
+> 
+>     b. Go to the right, i.e., current = current.right
+> 
+> Else
+> 
+>     a. In current's left subtree, make current the right child of the rightmost node
+> 
+>     b. Go to this left child, i.e., current = current.left
+> ```
+
+For example:
+
+```
+          1
+        /   \
+       2     3
+      / \   /
+     4   5 6
+```
+
+First, 1 is the root, so initialize 1 as current, 1 has left child which is 2, the current's left subtree is
+
+```
+         2
+        / \
+       4   5
+```
+
+So in this subtree, the rightmost node is 5, then make the current(1) as the right child of 5. Set current = cuurent.left (current = 2). The tree now looks like:
+
+```
+         2
+        / \
+       4   5
+            \
+             1
+              \
+               3
+              /
+             6
+```
+
+For current 2, which has left child 4, we can continue with the same process as we did above
+
+```
+        4
+         \
+          2
+           \
+            5
+             \
+              1
+               \
+                3
+               /
+              6
+```
+
+then add 4 because it has no left child, then add 2, 5, 1, 3 one by one, for node 3 which has left child 6, do the same as above. Finally, the inorder taversal is [4,2,5,1,6,3].
+
+Time complexity: O(n) 
+
+Space complexity: O(1) 
+
