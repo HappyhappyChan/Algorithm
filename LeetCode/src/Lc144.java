@@ -44,7 +44,7 @@ public class Lc144 {
         return ret;
     }
 
-    //3 leetcode-cn mirrors遍历
+    //3 leetcode-cn morrisTraversal遍历
     public List<Integer> preorderTraversal3(TreeNode root) {
         List<Integer> res = new ArrayList<Integer>();
         if(root == null)
@@ -70,5 +70,30 @@ public class Lc144 {
             p1 = p1.right;
         }
         return res;
+    }
+
+    //4 youtube
+    public void preorder(TreeNode root){
+        TreeNode cur = root;
+        while(cur != null){
+            if(cur.left == null){
+                System.out.println(cur.val + " ");
+                cur = cur.right;
+            }
+            else{
+                TreeNode pre = cur.left;
+                while(pre.right != cur && pre.right != null){
+                    pre = pre.right;
+                }
+                if(pre.right == null){
+                    pre.right = cur;
+                    System.out.println(cur.val + " ");
+                    cur = cur.left;
+                }else{
+                    pre.right = null;
+                    cur = cur.right;
+                }
+            }
+        }
     }
 }

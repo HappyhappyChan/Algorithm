@@ -52,11 +52,13 @@ public class Lc94 {
         TreeNode curr = root;
         TreeNode pre;
         while (curr != null) {
+            //left is null then print the node and go to right
             if (curr.left == null) {
                 res.add(curr.val);
                 curr = curr.right; // move to next right node
             } else { // has a left subtree
                 pre = curr.left;
+                //find the predecessor
                 while (pre.right != null) { // find rightmost
                     pre = pre.right;
                 }
@@ -69,5 +71,35 @@ public class Lc94 {
         return res;
     }
 
+    //4 youtube
+    public void inorder(TreeNode root){
+        TreeNode cur = root;
+        while(cur != null){
+            //left is null then print the node and go to right
+            if(cur.left == null){
+                System.out.println(cur.val+" ");
+                cur = cur.right;
+            }
+            else{
+                //find the predecessor
+                TreeNode pre = cur.left;
+                //to find predecessor, keeping going right
+                //till right node is not null or
+                //right node is not cur
+                while(pre.right != cur && pre.right != null){
+                    pre = pre.right;
+                }
+                if(pre.right == null){
+                    pre.right = cur;
+                    cur = cur.left;
+                }else{
+                    //left is already visited, go right after visiting cur
+                    pre.right = null;
+                    System.out.println(cur.val + " ");
+                    cur = cur.right;
+                }
+            }
+        }
+    }
 
 }
