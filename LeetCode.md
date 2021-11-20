@@ -4248,6 +4248,8 @@ Space complexity: O(n)
 
 #### Solution 3： Morris Traversal
 
+[Youtube视频讲解，看！][https://www.youtube.com/watch?v=wGXB9OWhPTg]
+
 In this method, we have to use a new data structure-Threaded Binary Tree, and the strategy is as follows:
 
 > Step 1: Initialize current as root
@@ -4321,4 +4323,194 @@ then add 4 because it has no left child, then add 2, 5, 1, 3 one by one, for nod
 Time complexity: O(n) 
 
 Space complexity: O(1) 
+
+## BST
+
+二叉查找树（BST）：根节点大于等于左子树所有节点，小于等于右子树所有节点。
+
+二叉查找树中序遍历有序。
+
+### 669 修剪二叉查找树
+
+669. Trim a Binary Search Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/trim-a-binary-search-tree/description/) / [力扣](https://leetcode-cn.com/problems/trim-a-binary-search-tree/description/)
+
+#### Solution 1：Recursion
+
+When `node.val > high`, we know that the trimmed binary tree must occur to the left of the node. Similarly, when `node.val < low`, the trimmed binary tree occurs to the right of the node. Otherwise, we will trim both sides of the tree.
+
+**Complexity Analysis**
+
+- Time Complexity: O(N) , where N  is the total number of nodes in the given tree. We visit each node at most once.
+- Space Complexity: O(N) . Even though we don't explicitly use any additional memory, the call stack of our recursion could be as large as the number of nodes in the worst case.
+
+#### Solution 2：Iteration
+
+多看代码理解思考吧
+
+### 230 寻找二叉查找树的第 k 个元素
+
+230. Kth Smallest Element in a BST (Medium)
+
+[Leetcode](https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/) / [力扣](https://leetcode-cn.com/problems/kth-smallest-element-in-a-bst/description/)
+
+#### Solution 1：递归
+
+**Complexity Analysis**
+
+- Time complexity :  O(*N*) to build a traversal.
+- Space complexity :  O(*N*) to keep an inorder traversal.
+
+#### Solution 2：迭代
+
+**Complexity Analysis**
+
+- Time complexity:  O(*H*+*k*), where H  is a tree height. This complexity is defined by the stack, which contains at least H + k  elements, since before starting to pop out one has to go down to a leaf. This results in `O(logN+k)` for the balanced tree and `O(N+k)` for completely unbalanced tree with all the nodes in the left subtree.
+- Space complexity: `O(H)` to keep the stack, where H is a tree height. That makes  O(*N*) in the worst case of the skewed tree, and  O(log*N*) in the average case of the balanced tree.
+
+### 538  把二叉查找树每个节点的值都加上比它大的节点的值
+
+538. Convert BST to Greater Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/convert-bst-to-greater-tree/description/) / [力扣](https://leetcode-cn.com/problems/convert-bst-to-greater-tree/description/)
+
+#### Solution 1: recursion
+
+Time complexity: $O(n)$
+
+Space complexity: $O(n)$
+
+#### Solution 2: iteration with a stack
+
+Time complexity: $O(n)$
+
+Space complexity: $O(n)$
+
+#### Solution 3：Reverse Morris In-order traversal
+
+【这个我没细看】
+
+Time complexity: $O(n)$
+
+Space complexity: $O(1)$
+
+### 235 二叉查找树的最近公共祖先
+
+235. Lowest Common Ancestor of a Binary Search Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/) / [力扣](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/)
+
+#### Solution 1：递归
+
+#### Solution 2: 1次遍历
+
+O(n), O(1)
+
+#### Solution 3：2 次遍历
+
+O(n), O(n)
+
+### 236 二叉树的最近公共祖先
+
+236. Lowest Common Ancestor of a Binary Tree (Medium)
+
+[Leetcode](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/description/) / [力扣](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/description/)
+
+#### Solution 1：递归
+
+1. 从根结点开始遍历
+2. 如果当前结点是p 或者是 q， 则标记`mid = true`，然后继续搜索另一个结点的左子树和右子树
+3. 如果左子树或右子树返回true，说明其中一个要找的节点就在下面。
+4. 如果任意一个时刻，`mid, left, right`中有2个是True，则说明我们找到了LCA
+
+**Complexity Analysis**
+
+- Time Complexity: O(N) , where N  is the number of nodes in the binary tree. In the worst case we might be visiting all the nodes of the binary tree.
+- Space Complexity: O(N) . This is because the maximum amount of space utilized by the recursion stack would be N since the height of a skewed binary tree could be N .
+
+#### Solution 2: Iterative using parent pointers
+
+1. 从root遍历树
+2. 直到找到p和q， 我们将parent存储
+3. 一旦找到p和q，用p的所有祖先去和q的所有祖先对比，然后找到共同祖先
+
+[Java 容器源码分析之 Deque 与 ArrayDeque][https://blog.jrwang.me/2016/java-collections-deque-arraydeque/]
+
+**Complexity Analysis**
+
+- Time Complexity : O(N) , where N  is the number of nodes in the binary tree. In the worst case we might be visiting all the nodes of the binary tree.
+- Space Complexity : O(N) . In the worst case space utilized by the stack, the parent pointer dictionary and the ancestor set, would be N  each, since the height of a skewed binary tree could be N .
+
+#### Solution 3：Iterative without parent pointers
+
+1. 从root节点开始
+2. 将`(root, root_state)`放入栈，`root_state`表示是否有孩子没被遍历
+3. 当栈不为空，获得top元素，记为`(parent_node, parent_state)`
+4. 先判断`parent_node`是否是p或者q，然后才开始遍历他的孩子结点。
+5. 第一次找到p或者q， 将boolean标记`one_node_found`记为true。然后开始
+
+【这个时间复杂度和空间复杂度和Solution 2一样，就没看了】
+
+### 108 从有序数组中构造二叉查找树
+
+108. Convert Sorted Array to Binary Search Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/) / [力扣](https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/description/)
+
+### 109  根据有序链表构造平衡的二叉查找树
+
+109. Convert Sorted List to Binary Search Tree (Medium)
+
+[Leetcode](https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/description/) / [力扣](https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree/description/)
+
+#### Solution 1：将链表转成数组调用108方法
+
+#### Solution 2：分治
+
+当前链表的左端点`left`,右端点`right`, `[left, right)`，即 right 不在链表中。
+
+找链表中位数结点的方法较为简单的是【快慢指针】。初始时，快指针和慢指针都指向链表做左端点，fast 向右移动2格，slow 向右移动一次，当 fast 到达边界，即fast 到达右端点，或者快指针的下一个结点是右端点时，slow对应的就是中位数。找到中位结点后，作为当前根结点的元素，递归构造左子树和右子树。
+
+复杂度分析
+
+时间复杂度：$O(n \log n)$，其中 n 是链表的长度。
+
+设长度为 n  的链表构造二叉搜索树的时间为 T(n) ，递推式为 $T(n) = 2 \cdot T(n/2) + O(n)$，根据主定理， T(n)=O(nlogn)。
+
+空间复杂度：O(\log n)O(logn)，这里只计算除了返回答案之外的空间。平衡二叉树的高度为  O(logn)，即为递归过程中栈的最大深度，也就是需要的空间。
+
+#### Solution 3：分治 + 中序遍历优化
+
+方法一的时间复杂度的瓶颈在于寻找中位数节点。由于构造出的二叉搜索树的中序遍历结果就是链表本身，因此我们可以将分治和中序遍历结合起来，减少时间复杂度。
+
+具体地，设当前链表的左端点编号为  left，右端点编号为  right，包含关系为「双闭」，即  left 和  right 均包含在链表中。链表节点的编号为  [0,n)。中序遍历的顺序是「左子树 - 根节点 - 右子树」，那么在分治的过程中，我们不用急着找出链表的中位数节点，而是使用一个占位节点，等到中序遍历到该节点时，再填充它的值。
+
+我们可以通过计算编号范围来进行中序遍历：
+
+中位数节点对应的编号为$ \textit{mid} = (\textit{left} + \textit{right} + 1) / 2$；
+
+根据方法一中对于中位数的定义，编号为 $(\textit{left} + \textit{right}) / 2$ 的节点同样也可以是中位数节点。
+
+左右子树对应的编号范围分别为 $[\textit{left}, \textit{mid}-1]$和$ [\textit{mid}+1, \textit{right}]$。
+
+如果 $\textit{left} > \textit{right}$，那么遍历到的位置对应着一个空节点，否则对应着二叉搜索树中的一个节点。
+
+这样一来，我们其实已经知道了这棵二叉搜索树的结构，并且题目给定了它的中序遍历结果，那么我们只要对其进行中序遍历，就可以还原出整棵二叉搜索树了。
+
+ 复杂度分析
+
+时间复杂度：O(n) ，其中 n  是链表的长度。
+
+设长度为 n  的链表构造二叉搜索树的时间为  T(n)，递推式为 $T(n) = 2 \cdot T(n/2) + O(1)$，根据主定理，T(n) = O(n) 。
+
+空间复杂度：$O(\log n)$，这里只计算除了返回答案之外的空间。平衡二叉树的高度为 $O(\log n)$，即为递归过程中栈的最大深度，也就是需要的空间。
+
+### 653 在二叉查找树中寻找两个节点，使它们的和为一个给定值
+
+653. Two Sum IV - Input is a BST (Easy)
+
+[Leetcode](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/description/) / [力扣](https://leetcode-cn.com/problems/two-sum-iv-input-is-a-bst/description/)
+
+【我觉得一点都不easy啊】
 
