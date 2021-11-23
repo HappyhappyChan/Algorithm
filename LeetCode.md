@@ -4514,3 +4514,268 @@ O(n), O(n)
 
 【我觉得一点都不easy啊】
 
+### 530  在二叉查找树中查找两个节点之差的最小绝对值
+
+530. Minimum Absolute Difference in BST (Easy)
+
+[Leetcode](https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/) / [力扣](https://leetcode-cn.com/problems/minimum-absolute-difference-in-bst/description/)
+
+利用二叉查找树的中序遍历为有序的性质，计算中序遍历中临近的两个节点之差的绝对值，取最小值。
+
+用递归比用栈的时间和空间的效率都高很多
+
+复杂度分析
+
+时间复杂度：O(n) ，其中 n  为二叉搜索树节点的个数。每个节点在中序遍历中都会被访问一次且只会被访问一次，因此总时间复杂度为 O(n) 。
+
+空间复杂度：O(n) 。递归函数的空间复杂度取决于递归的栈深度，而栈深度在二叉搜索树为一条链的情况下会达到 O(n)  级别。
+
+### 501 寻找二叉查找树中出现次数最多的值
+
+501. Find Mode in Binary Search Tree (Easy)
+
+[Leetcode](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/) / [力扣](https://leetcode-cn.com/problems/find-mode-in-binary-search-tree/description/)
+
+## Trie
+
+![image-20211122155135677](LeetCode.assets/image-20211122155135677.png)
+
+Trie，又称前缀树或字典树，用于判断字符串是否存在或者是否具有某种字符串前缀。
+
+### 208 实现一个 Trie
+
+208. Implement Trie (Prefix Tree) (Medium)
+
+[Leetcode](https://leetcode.com/problems/implement-trie-prefix-tree/description/) / [力扣](https://leetcode-cn.com/problems/implement-trie-prefix-tree/description/)
+
+复杂度分析
+
+时间复杂度：初始化为 O(1) ，其余操作为  O(∣S∣)，其中  ∣S∣ 是每次插入或查询的字符串的长度。
+
+空间复杂度： O(∣T∣⋅Σ)，其中 ∣T∣ 为所有插入字符串的长度之和， Σ 为字符集的大小，本题 Σ=26。
+
+记得看LeetCode的solution ，但是注意，这里面包含了两个类，一个是Trie 一个是 TrieNode;
+
+### 677 实现一个 Trie，用来求前缀和
+
+677. Map Sum Pairs (Medium)
+
+[Leetcode](https://leetcode.com/problems/map-sum-pairs/description/) / [力扣](https://leetcode-cn.com/problems/map-sum-pairs/description/)
+
+【Trie这部分看懂代码了，但是又好像没有进脑子】
+
+# 栈和队列
+
+## 232 用栈实现队列
+
+232. Implement Queue using Stacks (Easy)
+
+栈的顺序为后进先出，而队列的顺序为先进先出。使用两个栈实现队列，一个元素需要经过两个栈才能出队列，在经过第一个栈时元素顺序被反转，经过第二个栈时再次被反转，此时就是先进先出顺序。
+
+## 225 用队列实现栈
+
+225. Implement Stack using Queues (Easy)
+
+[Leetcode](https://leetcode.com/problems/implement-stack-using-queues/description/) / [力扣](https://leetcode-cn.com/problems/implement-stack-using-queues/description/)
+
+在将一个元素 x 插入队列时，为了维护原来的后进先出顺序，需要让 x 插入队列首部。而队列的默认插入顺序是队列尾部，因此在将 x 插入队列尾部之后，需要让除了 x 之外的所有元素出队列，再入队列。
+
+【LeetCode的solution写的很详细，看！】
+
+## 155 最小值栈
+
+155. Min Stack (Easy)
+
+[Leetcode](https://leetcode.com/problems/min-stack/description/) / [力扣](https://leetcode-cn.com/problems/min-stack/description/)
+
+对于实现最小值队列问题，可以先将队列使用栈来实现，然后就将问题转换为最小值栈，这个问题出现在 编程之美：3.7。
+
+## 20 用栈实现括号匹配
+
+20. Valid Parentheses (Easy)
+
+[Leetcode](https://leetcode.com/problems/valid-parentheses/description/) / [力扣](https://leetcode-cn.com/problems/valid-parentheses/description/)
+
+## 739 数组中元素与下一个比它大的元素之间的距离
+
+739. Daily Temperatures (Medium)
+
+[Leetcode](https://leetcode.com/problems/daily-temperatures/description/) / [力扣](https://leetcode-cn.com/problems/daily-temperatures/description/)
+
+#### Solution 1：Brute Force
+
+#### Solution 2：Monotonic Stack
+
+跟我想的一样
+
+**Complexity Analysis**
+
+Given N  as the length of `temperatures`,
+
+- Time complexity: O(N) 
+
+  At first glance, it may look like the time complexity of this algorithm should be $O(N^2)$, because there is a nested while loop inside the for loop. However, each element can only be added to the stack once, which means the stack is limited to N  pops. Every iteration of the while loop uses 1 pop, which means the while loop will not iterate more than N times in total, across all iterations of the for loop.
+
+  An easier way to think about this is that in the worst case, every element will be pushed and popped once. This gives a time complexity of $O(2 \cdot N) = O(N)$.
+
+- Space complexity: O(N) 
+
+  If the input was non-increasing, then no element would ever be popped from the stack, and the stack would grow to a size of `N` elements at the end.
+
+  Note: `answer` does not count towards the space complexity because space used for the output format does not count.
+
+#### Solution 3：Array, Optimized Space
+
+**Complexity Analysis**
+
+Given N  as the length of `temperatures`,
+
+- Time complexity: O(N) 
+
+  Similar to the first approach, the nested while loop makes this algorithm look worse than O(N) . However, same as in the first approach, the total number of iterations in the while loop does not exceed N , which gives this algorithm a time complexity of $O(2 \cdot N) = O(N)$.
+
+  The reason the iterations in the while loop does not exceed N  is because the "jumps" prevent an index from being visited twice. If we had the example `temperatures = [45, 43, 45, 43, 45, 31, 32, 33, 50]`, after 5 iterations we would have `answer = [..., 4, 1, 1, 1, 0]`. The day at index `2` will use `answer[4]` to jump to the final day (which is the next warmer day), and then `answer[4]` will not be used again. This is because at the first day, `answer[2]` will be used to jump all the way to the end. The final solution is `answer = [8,1,6,1,4,1,1,1,0]`. The `6` was found with the help of the `4` and the `8` was found with the help of the `6`.
+
+- Space complexity: O(1) 
+
+  As stated above, while `answer` does use $O(N)$ space, the space used for the output does not count towards the space complexity. Thus, only constant extra space is used.
+
+## 503 循环数组中比当前元素大的下一个元素
+
+503. Next Greater Element II (Medium)
+
+[Leetcode](https://leetcode.com/problems/next-greater-element-ii/description/) / [力扣](https://leetcode-cn.com/problems/next-greater-element-ii/description/)
+
+与 739. Daily Temperatures (Medium) 不同的是，数组是循环数组，并且最后要求的不是距离而是下一个元素。
+
+#### Solution 1：Brute Force
+
+**Complexity Analysis**
+
+- Time complexity : $O(n^2)$. The complete nums array of size n  is scanned for all the elements of nums  in the worst case.
+- Space complexity : O(n) . res  array of size n*n* is used.
+
+#### Solution 2：Stack
+
+**Complexity Analysis**
+
+- Time complexity : O(n) . Only two traversals of the nums  array are done. Further, atmost  2n elements are pushed and popped from the stack.
+- Space complexity : O(n) . A stack of size n  is used. res  array of size n is used.
+
+# 哈希表
+
+哈希表使用 O(N) 空间复杂度存储数据，并且以 O(1) 时间复杂度求解问题。
+
+- Java 中的 **HashSet** 用于存储一个集合，可以查找元素是否在集合中。如果元素有穷，并且范围不大，那么可以用一个布尔数组来存储一个元素是否存在。例如对于只有小写字符的元素，就可以用一个长度为 26 的布尔数组来存储一个字符集合，使得空间复杂度降低为 O(1)。
+
+Java 中的 **HashMap** 主要用于映射关系，从而把两个元素联系起来。HashMap 也可以用来对元素进行计数统计，此时键为元素，值为计数。和 HashSet 类似，如果元素有穷并且范围不大，可以用整型数组来进行统计。在对一个内容进行压缩或者其它转换时，利用 HashMap 可以把原始内容和转换后的内容联系起来。例如在一个简化 url 的系统中 [Leetcode : 535. Encode and Decode TinyURL (Medium)
+
+[Leetcode](https://leetcode.com/problems/encode-and-decode-tinyurl/description/) / [力扣](https://leetcode-cn.com/problems/encode-and-decode-tinyurl/description/)，利用 HashMap 就可以存储精简后的 url 到原始 url 的映射，使得不仅可以显示简化的 url，也可以根据简化的 url 得到原始 url 从而定位到正确的资源 
+
+## 1 数组中两个数的和为给定值
+
+1. Two Sum (Easy)
+
+[Leetcode](https://leetcode.com/problems/two-sum/description/) / [力扣](https://leetcode-cn.com/problems/two-sum/description/)
+
+可以先对数组进行排序，然后使用双指针方法或者二分查找方法。这样做的时间复杂度为 O(NlogN)，空间复杂度为 O(1)。
+
+用 HashMap 存储数组元素和索引的映射，在访问到 nums[i] 时，判断 HashMap 中是否存在 target - nums[i]，如果存在说明 target - nums[i] 所在的索引和 i 就是要找的两个数。该方法的时间复杂度为 O(N)，空间复杂度为 O(N)，使用空间来换取时间。
+
+## 217 判断数组是否含有重复元素
+
+217. Contains Duplicate (Easy)
+
+[Leetcode](https://leetcode.com/problems/contains-duplicate/description/) / [力扣](https://leetcode-cn.com/problems/contains-duplicate/description/)
+
+## 594 最长和谐序列
+
+594. Longest Harmonious Subsequence (Easy)
+
+[Leetcode](https://leetcode.com/problems/longest-harmonious-subsequence/description/) / [力扣](https://leetcode-cn.com/problems/longest-harmonious-subsequence/description/)
+
+#### Solution 1：Brute Force
+
+找出所有子序列，判断子序列中的最大值和最小值是否相差1，如果是，判断哪个符合条件的子序列长。
+
+**Complexity Analysis**
+
+- Time complexity : $O(2^n)$. Number of subsequences generated will be $2^n$.
+- Space complexity : $O(1)$. Constant space required.
+
+#### Solution 2：排序
+
+复杂度分析
+
+时间复杂度：$O(N\log N)$，其中  N 为数组的长度。我们首先需要对数组进行排序，花费的时间复杂度为 $O(NlogN)$，我们需要利用双指针遍历数组花费的时间为 O(2N) ，总的时间复杂度 $T(N) = O(N\log N) + O(2N) = O(N\log N)$。
+
+空间复杂度：O(1) ，需要常数个空间保存中间变量。
+
+####  Solution 3：哈希表
+
+复杂度分析
+
+时间复杂度：O(N) ，其中  N 为数组的长度。
+
+空间复杂度：O(N) ，其中  N 为数组的长度。数组中最多有 N  个不同元素，因此哈希表最多存储  N 个数据。
+
+####  Solution 4：Better Brute Force
+
+**Complexity Analysis**
+
+- Time complexity : $O(n^2)$. Two nested loops are there.
+- Space complexity : O(1) . Constant space required.
+
+#### Solution 5 ：In single loop
+
+**Complexity Analysis**
+
+- Time complexity : O(n) . Only one loop is there.
+- Space complexity : O(n) . map  size grows upto size n .
+
+## 128 最长连续序列
+
+128. Longest Consecutive Sequence (Hard)
+
+[Leetcode](https://leetcode.com/problems/longest-consecutive-sequence/description/) / [力扣](https://leetcode-cn.com/problems/longest-consecutive-sequence/description/)
+
+#### Solution 1：我自己想的
+
+排序，然后用HashMap记录每个元素出现的次数，然后遍历一直找比当前元素+1, +2，..., +3的数，并且用`carry`记录下一次遍历从哪个索引开始，因为`carry`表示这个序列中有多少元素【包含重复的】，这些是要跳过的。
+
+#### Solution 2：Brute Force
+
+**Complexity Analysis**
+
+- Time complexity : $O(n^3)$.
+
+  The outer loop runs exactly n*n* times, and because `currentNum` increments by 1 during each iteration of the `while` loop, it runs in O(n)  time. Then, on each iteration of the `while` loop, an O(n)  lookup in the array is performed. Therefore, this brute force algorithm is really three nested O(n) loops, which compound multiplicatively to a cubic runtime.
+
+- Space complexity : O(1) .
+
+  The brute force algorithm only allocates a handful of integers, so it uses constant additional space.
+
+#### Solution 2：Sorting
+
+**Complexity Analysis**
+
+- Time complexity : O(nlgn) 
+
+  The main `for` loop does constant work n  times, so the algorithm's time complexity is dominated by the invocation of `sort`, which will run in O(nlgn) time for any sensible implementation.
+
+- Space complexity : O(1)  (or O(n) ).
+
+  For the implementations provided here, the space complexity is constant because we sort the input array in place. If we are not allowed to modify the input array, we must spend linear space to store a sorted copy.
+
+#### Solution 4: HashSet and Intelligent Sequence Building
+
+**Complexity Analysis**
+
+- Time complexity : O(n) .
+
+  Although the time complexity appears to be quadratic due to the `while` loop nested within the `for` loop, closer inspection reveals it to be linear. Because the `while` loop is reached only when `currentNum` marks the beginning of a sequence (i.e. `currentNum-1` is not present in `nums`), the `while` loop can only run for n*n* iterations throughout the entire runtime of the algorithm. This means that despite looking like $O(n \cdot n)$complexity, the nested loops actually run in $O(n + n) = O(n)$ time. All other computations occur in constant time, so the overall runtime is linear.
+
+- Space complexity : O(n) .
+
+  In order to set up O(1) containment lookups, we allocate linear space for a hash table to store the O(n)  numbers in `nums`. Other than that, the space complexity is identical to that of the brute force solution.
+
