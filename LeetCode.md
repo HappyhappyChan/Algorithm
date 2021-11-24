@@ -4779,3 +4779,283 @@ Java 中的 **HashMap** 主要用于映射关系，从而把两个元素联系�
 
   In order to set up O(1) containment lookups, we allocate linear space for a hash table to store the O(n)  numbers in `nums`. Other than that, the space complexity is identical to that of the brute force solution.
 
+# 字符串
+
+## 字符串循环移位包含
+
+[编程之美 3.1](https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode 题解 - 字符串.md#)
+
+```
+s1 = AABCD, s2 = CDAA
+Return : true
+```
+
+给定两个字符串 s1 和 s2，要求判定 s2 是否能够被 s1 做循环移位得到的字符串包含。
+
+s1 进行循环移位的结果是 s1s1 的子字符串，因此只要判断 s2 是否是 s1s1 的子字符串即可。
+
+即判断
+
+```
+s1s1 = AABCDAABCD
+s2 = CDAA
+return s2 is s1s1.subsequence
+```
+
+## 字符串循环移位
+
+[编程之美 2.17](https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode 题解 - 字符串.md#)
+
+```
+s = "abcd123" k = 3
+Return "123abcd"
+```
+
+将字符串向右循环移动 k 位。
+
+将 abcd123 中的 abcd 和 123 单独翻转，得到 dcba321，然后对整个字符串进行翻转，得到 123abcd。
+
+## 字符串中单词的翻转
+
+[程序员代码面试指南](https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode 题解 - 字符串.md#)
+
+```
+s = "I am a student"
+Return "student a am I"
+```
+
+将每个单词翻转，然后将整个字符串翻转。
+
+## 242 两个字符串包含的字符是否完全相同
+
+242. Valid Anagram (Easy)
+
+[Leetcode](https://leetcode.com/problems/valid-anagram/description/) / [力扣](https://leetcode-cn.com/problems/valid-anagram/description/)
+
+#### Solution 1：哈希表
+
+可以用 HashMap 来映射字符与出现次数，然后比较两个字符串出现的字符数量是否相同。
+
+由于本题的字符串只包含 26 个小写字符，因此可以使用长度为 26 的整型数组对字符串出现的字符进行统计，不再使用 HashMap。
+
+先遍历记录字符串 s  中字符出现的频次，然后遍历字符串  t，减去  table 中对应的频次，如果出现 table[i]<0，则说明 t  包含一个不在  s 中的额外字符，返回  false 即可。
+
+**复杂度分析**
+
+- 时间复杂度：O(n) ，其中 n  为 s  的长度。
+- 空间复杂度：O(S) ，其中 S  为字符集大小，此处 S=26 。
+
+#### Solution 2：排序
+
+t 是 s 的异位词等价于「两个字符串排序后相等」。因此我们可以对字符串 s  和 t  分别排序，看排序后的字符串是否相等即可判断。此外，如果 s  和 t  的长度不同，t  必然不是 s  的异位词。
+
+ 复杂度分析
+
+时间复杂度： O(nlogn)，其中 n  为 s  的长度。排序的时间复杂度为  O(nlogn)，比较两个字符串是否相等时间复杂度为  O(n)，因此总体时间复杂度为 $O(n \log n+n)=O(n\log n)$。
+
+空间复杂度：$O(\log n)$。排序需要 $O(\log n)$ 的空间复杂度。注意，在某些语言（比如 Java & JavaScript）中字符串是不可变的，因此我们需要额外的 O(n) 的空间来拷贝字符串。但是我们忽略这一复杂度分析，因为：这依赖于语言的细节；
+这取决于函数的设计方式，例如，可以将函数参数类型更改为 char[]。
+
+## 409 计算一组字符集合可以组成的回文字符串的最大长度
+
+409. Longest Palindrome (Easy)
+
+[Leetcode](https://leetcode.com/problems/longest-palindrome/description/) / [力扣](https://leetcode-cn.com/problems/longest-palindrome/description/)
+
+> 65-90是大写， 97-122是小写
+
+#### Solution 1：数组
+
+我的方法
+
+```java
+int[] cnts = new int[52];
+if(c >= 65 && c <= 90){
+    cnts[c - 'A']++;
+}else{
+    cnts[c - 'A' - 6]++;
+}
+```
+
+#### Solution 2: 长度256的数组
+
+使用长度为 256 的整型数组来统计每个字符出现的个数，每个字符有偶数个可以用来构成回文字符串。
+
+因为回文字符串最中间的那个字符可以单独出现，所以如果有单独的字符就把它放到最中间。
+
+【但其实用128长度的数组也就够了】
+
+**Complexity Analysis**
+
+- Time Complexity: O(N) , where N  is the length of `s`. We need to count each letter.
+- Space Complexity: O(1) the space for our count, as the alphabet size of `s` is fixed. We should also consider that in a bit complexity model, technically we need  O(logN ) bits to store the count values.
+
+## 205 字符串同构
+
+205. Isomorphic Strings (Easy)
+
+[Leetcode](https://leetcode.com/problems/isomorphic-strings/description/) / [力扣](https://leetcode-cn.com/problems/isomorphic-strings/description/)
+
+这题有几个需要注意的点：
+
+1 一个character只能映射到自己或者另一个character
+
+2 没有两个character可以映射到同一个字符
+
+其实就是相当于一对一映射的关系
+
+#### Solution 1：Character Mapping with Dictionary
+
+1 定义2个字典，`map_s_t`和`map_t_s`去映射s到t和t到s。
+
+2 然后开始遍历两个字符串，每次遍历一个character
+
+3 第一个字符串中的字符是c1, 另一个字符串中的字符是c2.
+
+ 	1. 如果c1 在 s-t 中没有映射，而c2在t-s中也没有映射，就将这个对应的映射加入s-t 和 t-s 中。然后继续遍历下一个字符
+ 	2. 要求s-t[c1] = c2, t-s[c2] = c1. 只要任何一个条件不满足， 就return  false
+
+4 return true 直到字符串被遍历完
+
+**Complexity Analysis**
+
+Here N is the length of each string (if the strings are not the same length, then they cannot be isomorphic).
+
+- Time Complexity: O(N) . We process each character in both the strings exactly once to determine if the strings are isomorphic.
+- Space Complexity: O(1) since the size of the ASCII character set is fixed and the keys in our dictionary are all valid ASCII characters according to the problem statement.
+
+#### Solution 2：First occurence transformation
+
+For each character in the given string, we replace it with the index of that character's first occurence in the string.
+
+For a string like `paper`, the transformed string will be `01034`. The character `p` occurs first at the index `0`; so we replace future occurrences of `p` with the index `0`. Similar modifications are made for the other characters. Now let's look at `title`. The transformed string would be `01034` which is the same as that for `paper`. This confirms the isomorphic nature of both the strings.
+
+但是也要小心字符串长了之后，index就可能变成2位，这样的话就有可能出错。比如 【1 10】 【11 0】。为了解决这种情况，我们可以将每个character转为数字后加多一个空格，用空格隔开。即
+
+stenographics = `0 1 2 3 4 5 6 7 8 9 10 11 0` and  logarithmsxox = `0 1 2 3 4 5 6 7 8 9 10 1 10`
+
+Here N  is the length of each string (if the strings are not the same length, they cannot be isomorphic).
+
+- Time Complexity: O(N) . We process each character in both the strings exactly once to determine if they are isomorphic.
+- Space Complexity: O(N) . We form two new strings returned by our transformation function. The size of ASCII character set is fixed and the keys in our dictionary are valid ASCII characters only. So the size of the map in the transform function doesn't contribute to the space complexity.
+
+## 647 回文子字符串个数
+
+647. Palindromic Substrings (Medium)
+
+[Leetcode](https://leetcode.com/problems/palindromic-substrings/description/) / [力扣](https://leetcode-cn.com/problems/palindromic-substrings/description/)
+
+真就一点思路都没有……
+
+#### Solution 1：中心拓展
+
+计算有多少个回文子串的最朴素方法就是枚举出所有的回文子串，而枚举出所有的回文字串又有两种思路，分别是：
+
+1 枚举出所有的子串，然后再判断这些子串是否是回文；
+2 枚举每一个可能的回文中心，然后用两个指针分别向左右两边拓展，当两个指针指向的元素相同的时候就拓展，否则停止拓展。
+
+ 假设字符串的长度为 n 。我们可以看出前者会用 $O(n^2)$的时间枚举出所有的子串 $s[l_i \cdots r_i]$，然后再用 $O(r_i - l_i + 1)$ 的时间检测当前的子串是否是回文，整个算法的时间复杂度是 $O(n^3)$。而后者枚举回文中心的是 O(n)  的，对于每个回文中心拓展的次数也是 O(n) 的，所以时间复杂度是 $O(n^2)$。所以我们选择第二种方法来枚举所有的回文子串。
+
+ 由此我们可以看出长度为 n  的字符串会生成 2n-1 组回文中心 $[l_i, r_i]$，其中 $l_i = \lfloor \frac{i}{2} \rfloor$，$r_i = l_i + (i \bmod 2)$。这样我们只要从 0  到  2n−2 遍历 i ，就可以得到所有可能的回文中心，这样就把奇数长度和偶数长度两种情况统一起来了。
+
+> 为什么是`2n-1`个中心点？
+>
+> 如果回文串是奇数，我们把回文串中心的那个字符叫做`中心点`，如果回文串是偶数我们就把中间的那两个字符叫做`中心点`。
+>
+> 对于一个长度为`n`的字符串，我们可以用它的任意一个字符当做中心点，所以中心点的个数是`n`。我们还可以用它任意挨着的两个字符当做中心点，所以中心点是`n-1`，总的中心点就是`2*n-1`。
+
+ **复杂度分析**
+
+- 时间复杂度：$O(n^2)$。
+- 空间复杂度：$O(1)$。
+
+#### Solution 2：Manacher算法
+
+Manacher 算法是在线性时间内求解最长回文子串的算法。在本题中，我们要求解回文串的个数，为什么也能使用 Manacher 算法呢？这里我们就需要理解一下 Manacher 的基本原理。
+
+Manacher 算法也会面临「方法一」中的奇数长度和偶数长度的问题，它的处理方式是在所有的相邻字符中间插入 \##，比如 abaa  会被处理成 \#a\#b\#a\#a\# 【长度变成len*2+1】，这样可以保证所有找到的回文串都是奇数长度的，以任意一个字符为回文中心，既可以包含原来的奇数长度的情况，也可以包含原来偶数长度的情况。假设原字符串为 S ，经过这个处理之后的字符串为 s 。
+
+ 我们用 f(i) 来表示以 s  的第 i 位为回文中心，可以拓展出的最大回文半径，那么 f(i) - 1 就是以 i  为中心的最大回文串长度 （想一想为什么）。
+
+Manacher 算法依旧需要枚举 s  的每一个位置并先假设它是回文中心，但是它会利用已经计算出来的状态来更新 f(i) ，而不是向「中心拓展」一样盲目地拓展。具体地说，假设我们已经计算好了 [1, i - 1]  区间内所有点的 f （即我们知道 [1, i - 1]  这些点作为回文中心时候的最大半径）， 那么我们也就知道了 [1, i - 1] 拓展出的回文达到最大半径时的回文右端点。例如 i = 4  的时候 f(i) = 5 ，说明以第 4  个元素为回文中心，最大能拓展到的回文半径是 5 ，此时右端点为 4 + 5 - 1 = 8 。所以当我们知道一个  i 对应的 f(i) 的时候，我们就可以很容易得到它的右端点为 i + f(i) - 1。
+
+ 还有好长的解析……
+
+到时候自己再看LeetCode-cn上的说明吧。
+
+复杂度分析
+
+时间复杂度：O(n) 。即 Manacher 算法的时间复杂度，由于最大回文右端点 r_m 只会增加而不会减少，故中心拓展进行的次数最多为 O(n) ，此外我们只会遍历字符串一次，故总复杂度为 O(n) 。
+
+空间复杂度：O(n) 。
+
+###  9 判断一个整数是否是回文数
+
+9. Palindrome Number (Easy)
+
+[Leetcode](https://leetcode.com/problems/palindrome-number/description/) / [力扣](https://leetcode-cn.com/problems/palindrome-number/description/)
+
+要求不能使用额外空间，也就不能将整数转换为字符串进行判断。
+
+#### Solution 1：Revert half of the Number
+
+将整数分成左右两部分，右边那部分需要转置，然后判断这两部分是否相等。
+
+**Complexity Analysis**
+
+- Time complexity : $O(\log_{10}(n))$. We divided the input by 10 for every iteration, so the time complexity is $O(\log_{10}(n))$
+- Space complexity : O(1) .
+
+## 696 统计二进制字符串中连续 1 和连续 0 数量相同的子字符串个数
+
+696. Count Binary Substrings (Easy)
+
+[Leetcode](https://leetcode.com/problems/count-binary-substrings/description/) / [力扣](https://leetcode-cn.com/problems/count-binary-substrings/description/)
+
+说是Easy但是一点都不Easy啊
+
+#### Solution 1：Group By Character
+
+**Algorithm**
+
+Let's create `groups` as defined above. The first element of `s` belongs in it's own group. From then on, each element either doesn't match the previous element, so that it starts a new group of size 1; or it does match, so that the size of the most recent group increases by 1.
+
+Afterwards, we will take the sum of `min(groups[i-1], groups[i])`.
+
+**Complexity Analysis**
+
+- Time Complexity: O(N) , where N  is the length of `s`. Every loop is through O(N)  items with O(1) work inside the for-block.
+- Space Complexity: O(N) , the space used by `groups`.
+
+#### Solution 2：Linear Scan
+
+看代码理解
+
+**Complexity Analysis**
+
+- Time Complexity: O(N) , where N  is the length of `s`. Every loop is through O(N)  items with O(1) work inside the for-block.
+- Space Complexity: O(1) , the space used by `prev`, `cur`, and `ans`.
+
+# 数组与矩阵
+
+## 283 把数组中的 0 移到末尾
+
+283. Move Zeroes (Easy)
+
+## 566 改变矩阵维度
+
+566. Reshape the Matrix (Easy)
+
+[Leetcode](https://leetcode.com/problems/reshape-the-matrix/description/) / [力扣](https://leetcode-cn.com/problems/reshape-the-matrix/description/)
+
+## 485 找出数组中最长的连续 1
+
+485. Max Consecutive Ones (Easy)
+
+[Leetcode](https://leetcode.com/problems/max-consecutive-ones/description/) / [力扣](https://leetcode-cn.com/problems/max-consecutive-ones/description/)
+
+## 240 有序矩阵查找
+
+240. Search a 2D Matrix II (Medium)
+
+[Leetcode](https://leetcode.com/problems/search-a-2d-matrix-ii/description/) / [力扣](https://leetcode-cn.com/problems/search-a-2d-matrix-ii/description/)
